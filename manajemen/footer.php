@@ -5,7 +5,7 @@
       <div class="pull-right hidden-xs">
         <b>Version</b> 2.4.0
       </div>
-      <strong>Copyright &copy; 2019</strong> - Sistem Informasi Inventaris Sarana & Prasarana SMK
+      <strong>Copyright &copy; 2026</strong> - Sistem Informasi Inventory Gudang PT LJP
     </footer>
   </div>
   <!-- ./wrapper -->
@@ -56,52 +56,35 @@
   <script>
 $(document).ready(function(){
 
-  $('#table-datatable').DataTable({
-    paging       : true,
-    lengthChange : true,
-    searching    : true,
-    ordering     : true,
-    info         : true,
-    autoWidth    : true,
-    scrollX      : false,
-    responsive   : true,
-    pageLength   : 10,
-    "order": [[ 3, "desc" ]], // Default urutkan berdasarkan kolom ke-4 (tanggal) descending
-    language: {
-      search: 'Pencarian:',
-      lengthMenu: 'Tampilkan _MENU_ data per halaman',
-      zeroRecords: 'Data tidak ditemukan',
-      info: 'Menampilkan halaman _PAGE_ dari _PAGES_',
-      infoEmpty: 'Tidak ada data',
-      paginate: {
-        first: 'Pertama',
-        last: 'Terakhir',
-        next: 'Selanjutnya',
-        previous: 'Sebelumnya'
+  if ($('#table-datatable').length > 0) {
+    $('#table-datatable').DataTable({
+      paging      : true,
+      lengthChange: true,
+      searching   : true,
+      ordering    : true,
+      info        : true,
+      autoWidth   : true,
+      scrollX     : false,
+      responsive  : true,
+      pageLength  : 10,
+      order       : [[ 3, "desc" ]],
+      language: {
+        search: 'Pencarian:',
+        lengthMenu: 'Tampilkan _MENU_ data per halaman',
+        zeroRecords: 'Data tidak ditemukan',
+        info: 'Menampilkan halaman _PAGE_ dari _PAGES_',
+        infoEmpty: 'Tidak ada data',
+        paginate: {
+          first: 'Pertama',
+          last: 'Terakhir',
+          next: 'Selanjutnya',
+          previous: 'Sebelumnya'
+        }
       }
-    }
-  });
+    });
+  }
 
-  $('.datepicker').datepicker({
-    autoclose: true,
-    format: 'yyyy-mm-dd',
-    todayHighlight: true,
-    orientation: 'bottom auto'
-  });
-
-  $('.datepicker2').datepicker({
-    autoclose: true,
-    format: 'yyyy/mm/dd',
-    todayHighlight: true,
-    orientation: 'bottom auto'
-  });
-
-});
-
-$(function () {
-  CKEDITOR.replace('editor1')
 });
 </script>
-
   </body>
   </html>

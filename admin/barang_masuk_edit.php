@@ -47,6 +47,11 @@
                 </div>
 
                 <div class="form-group">
+                  <label>Register</label>
+                  <input type="text" class="form-control" name="register" placeholder="Register" value="<?php echo $d['bm_register'] ?>">
+                </div>
+
+                <div class="form-group">
                   <label>Tanggal Masuk</label>
                   <input type="text" class="form-control datepicker2" autocomplete="off" name="tanggal" required="required" placeholder="Masukkan Tanggal Masuk .." value="<?php echo $d['bm_tgl_masuk'] ?>">
                 </div>
@@ -57,14 +62,34 @@
                 </div>
 
                 <div class="form-group">
-                  <label>Suplier</label>
-                  <select class="form-control" name="suplier" required="required">
-                    <option value=""> - Pilih Suplier - </option>
+                  <label>Berat</label>
+                  <input type="text" class="form-control" name="berat" placeholder="Berat" value="<?php echo $d['bm_berat'] ?>">
+                </div>
+
+                <div class="form-group">
+                  <label>Lokasi Asal</label>
+                  <select class="form-control" name="id_gudang">
+                    <option value=""> - Pilih Lokasi Asal - </option>
                     <?php 
-                    $suplier = mysqli_query($koneksi,"SELECT * from suplier");
-                    while($s=mysqli_fetch_array($suplier)){
+                    $gudang = mysqli_query($koneksi,"SELECT * from gudang");
+                    while($g=mysqli_fetch_array($gudang)){
                       ?>
-                      <option <?php if($d['bm_id_suplier'] == $s['suplier_id']){ echo "selected='selected'"; } ?> value="<?php echo $s['suplier_id']; ?>"><?php echo $s['suplier_nama']; ?></option>
+                      <option <?php if($d['bm_id_gudang'] == $g['gudang_id']){echo "selected='selected'";} ?> value="<?php echo $g['gudang_id']; ?>"><?php echo $g['lokasi_asal']; ?></option>
+                      <?php 
+                    }
+                    ?>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Lokasi Tujuan</label>
+                  <select class="form-control" name="id_gudang2">
+                    <option value=""> - Pilih Lokasi Tujuan - </option>
+                    <?php 
+                    $gudang2 = mysqli_query($koneksi,"SELECT * from gudang_2");
+                    while($g2=mysqli_fetch_array($gudang2)){
+                      ?>
+                      <option <?php if($d['bm_id_gudang2'] == $g2['gudang2_id']){echo "selected='selected'";} ?> value="<?php echo $g2['gudang2_id']; ?>"><?php echo $g2['lokasi_tujuan']; ?></option>
                       <?php 
                     }
                     ?>

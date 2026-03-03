@@ -1,9 +1,9 @@
- <!DOCTYPE html>
- <html>
- <head>
+<!DOCTYPE html>
+<html>
+<head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Administrator - Sistem Informasi Inventaris Sarana & Prasarana SMK</title>
+  <title>Manajemen - Sistem Informasi Inventaris Sarana & Prasarana SMK</title>
   <link rel="stylesheet" href="../assets/bower_components/bootstrap/dist/css/bootstrap.min.css">
 
 </head>

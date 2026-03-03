@@ -45,7 +45,13 @@
                 <tbody>
                   <?php
                   $no=1;
-                  $data = mysqli_query($koneksi,"SELECT * FROM barang_masuk ORDER BY bm_id DESC");
+                  $data = mysqli_query($koneksi,"SELECT bm.*, 
+                    g1.lokasi_asal as nama_gudang,
+                    g2.lokasi_tujuan as nama_gudang2
+                    FROM barang_masuk bm
+                    LEFT JOIN gudang g1 ON bm.bm_id_gudang = g1.gudang_id
+                    LEFT JOIN gudang_2 g2 ON bm.bm_id_gudang2 = g2.gudang2_id
+                    ORDER BY bm.bm_id DESC");
                   while($d = mysqli_fetch_array($data)){
                   ?>
                   <tr>
@@ -55,8 +61,8 @@
                     <td><?php echo $d['bm_tgl_masuk']; ?></td>
                     <td class="text-center"><?php echo $d['bm_jumlah']; ?></td>
                     <td><?php echo $d['bm_berat']; ?></td>
-                    <td><?php echo $d['bm_lokasi_asal']; ?></td>
-                    <td><?php echo $d['bm_lokasi_tujuan']; ?></td>
+                    <td><?php echo isset($d['nama_gudang']) ? $d['nama_gudang'] : '-'; ?></td>
+                    <td><?php echo isset($d['nama_gudang2']) ? $d['nama_gudang2'] : '-'; ?></td>
                     <td class="text-center">
                       <a class="btn btn-warning btn-xs" href="barang_masuk_edit.php?id=<?php echo $d['bm_id'] ?>" title="Edit" style="margin-right: 3px;">
                         <i class="fa fa-edit"></i>
@@ -68,6 +74,20 @@
                   </tr>
                   <?php } ?>
                 </tbody>
+                <tfoot>
+                  <tr class="bg-info">
+                    <th colspan="4" class="text-right">JUMLAH TOTAL:</th>
+                    <th class="text-center">
+                      <?php 
+                      include '../koneksi.php';
+                      $jumlah = mysqli_query($koneksi, "SELECT SUM(bm_jumlah) as total FROM barang_masuk");
+                      $j = mysqli_fetch_assoc($jumlah);
+                      echo number_format($j['total'], 0, ',', '.');
+                      ?>
+                    </th>
+                    <th colspan="4"></th>
+                  </tr>
+                </tfoot>
               </table>
             </div>
           </div>
@@ -90,7 +110,92 @@
       </div>
       <div class="modal-body">
         <form action="barang_masuk_act.php" method="post" class="form-horizontal">
-          <!-- (form kamu tetap, tidak diubah) -->
+          
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Barang</label>
+            <div class="col-sm-9">
+              <select class="form-control" name="barang" required="required">
+                <option value=""> - Pilih Barang - </option>
+                <?php 
+                $barang = mysqli_query($koneksi,"SELECT * from barang");
+                while($b=mysqli_fetch_array($barang)){
+                  ?>
+                  <option value="<?php echo $b['barang_id']; ?>"><?php echo $b['barang_nama']; ?></option>
+                  <?php 
+                }
+                ?>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Register</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" name="register" placeholder="Register">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Tanggal Masuk</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control datepicker" autocomplete="off" name="tanggal" required="required" placeholder="Tanggal Masuk" id="datepicker">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Jumlah</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="jumlah" required="required" placeholder="Jumlah">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Berat</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" name="berat" placeholder="Berat">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Lokasi Asal</label>
+            <div class="col-sm-9">
+              <select class="form-control" name="id_gudang">
+                <option value=""> Pilih Lokasi Asal </option>
+                <?php 
+                $gudang = mysqli_query($koneksi,"SELECT * from gudang");
+                while($g=mysqli_fetch_array($gudang)){
+                  ?>
+                  <option value="<?php echo $g['gudang_id']; ?>"><?php echo $g['lokasi_asal']; ?></option>
+                  <?php 
+                }
+                ?>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Lokasi Tujuan</label>
+            <div class="col-sm-9">
+              <select class="form-control" name="id_gudang2">
+                <option value=""> Pilih Lokasi Tujuan </option>
+                <?php 
+                $gudang2 = mysqli_query($koneksi,"SELECT * from gudang_2");
+                while($g2=mysqli_fetch_array($gudang2)){
+                  ?>
+                  <option value="<?php echo $g2['gudang2_id']; ?>"><?php echo $g2['lokasi_tujuan']; ?></option>
+                  <?php 
+                }
+                ?>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+              <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+          </div>
         </form>
       </div>
     </div>

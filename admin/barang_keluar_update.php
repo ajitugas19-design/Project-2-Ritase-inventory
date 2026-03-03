@@ -2,11 +2,12 @@
 include '../koneksi.php';
 $id  = $_POST['id'];
 $barang  = $_POST['barang'];
+$register = $_POST['register'];
 $tanggal = $_POST['tanggal'];
 $jumlah = $_POST['jumlah'];
-$lokasi = $_POST['lokasi'];
-$penerima = $_POST['penerima'];
-$keterangan = $_POST['keterangan'];
+$berat = $_POST['berat'];
+$id_gudang = $_POST['id_gudang'];
+$id_gudang2 = $_POST['id_gudang2'];
 
 
 $b = mysqli_query($koneksi,"select * from barang where barang_id='$barang'");
@@ -34,7 +35,16 @@ if($jumlah > $kembalikan_jumlah){
 	// kurangi jumlah data barang
 	mysqli_query($koneksi,"update barang set barang_jumlah='$kembalikan_jumlah' where barang_id='$id_barang'");
 
-	mysqli_query($koneksi,"update barang_keluar set bk_id_barang='$barang', bk_nama_barang='$nama_barang', bk_tgl_keluar='$tanggal', bk_jumlah_keluar='$jumlah', bk_lokasi='$lokasi', bk_penerima='$penerima', bk_keterangan='$keterangan' where bk_id='$id'");
+	mysqli_query($koneksi,"update barang_keluar set 
+		bk_id_barang='$barang', 
+		bk_register='$register',
+		bk_nama_barang='$nama_barang', 
+		bk_tgl_keluar='$tanggal', 
+		bk_jumlah_keluar='$jumlah', 
+		bk_berat='$berat',
+		bk_id_gudang='$id_gudang', 
+		bk_id_gudang2='$id_gudang2'
+		where bk_id='$id'");
 	
 	// update stok barang
 	if($jumlah > $jumlah_barang){

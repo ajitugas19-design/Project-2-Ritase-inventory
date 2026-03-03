@@ -32,20 +32,12 @@
                 <thead>
                   <tr>
                     <th width="1%">NO</th>
+                    <th>KODE</th>
+                    <th>REGISTER</th>
                     <th>NAMA</th>
-                    <!--
-                    <th>SPESIFIKASI</th>
-                    -->
-                    <th>LOKASI</th>
-                    <!--
-                    <th>KONDISI</th>
-                    -->
                     <th>JUMLAH</th>
-                    <!--
-                    <th>SUMBER DANA</th>
--->
-                    <!--<th>JENIS</th>-->
-                    <th>KETERANGAN</th>
+                    <th>LOKASI</th>
+                    <th>BARCODE</th>
                     <th width="10%">OPSI</th>
                   </tr>
                 </thead>
@@ -58,30 +50,17 @@
                     ?>
                     <tr>
                       <td><?php echo $no++; ?></td>
+                      <td><?php echo $d['barang_id']; ?></td>
+                      <td><?php echo $d['barang_register']; ?></td>
                       <td><?php echo $d['barang_nama']; ?></td>
-                        <!--
-                      <td><?php echo $d['barang_spesifikasi']; ?></td>
-                      -->
-                      <td><?php echo $d['barang_lokasi']; ?></td>
-                      <!--
-                      <td><?php echo $d['barang_kondisi']; ?></td>
-                      -->
                       <td><?php echo $d['barang_jumlah']; ?></td>
-                      <!--
-                      <td><?php echo $d['barang_sumber_dana']; ?></td>
-                  -->
-                     <!-- <td><?php echo $d['barang_jenis']; ?></td>
-                       -->
-                      <!--<td><?php echo $d['barang_keterangan']; ?></td>
-                      -->
-                      <!--<td>
-                      <img src="barcode.php?kode=<?php echo $d['barang_id']; ?>">
-                      </td> -->
+                      <td><?php echo $d['barang_lokasi']; ?></td>
                       <td>
-                      <img src="barcode_img.php?text=<?php echo $d['barang_id']; ?>" height="60">
+                        <img src="barcode_img.php?text=<?php echo $d['barang_id']; ?>" height="60">
+                        <br><small><?php echo $d['barang_id']; ?></small>
                       </td>
                       <td>                        
-                        <a class="btn btn-warning btn-sm" href="barang_edit.php?id=<?php echo $d['barang_id'] ?>"><i class="fa fa-cog"></i></a>
+                        <a class="btn btn-warning btn-sm" href="barang_edit.php?id=<?php echo $d['barang_id'] ?>"><i class="fa fa-edit"></i></a>
                         <a class="btn btn-danger btn-sm" href="barang_hapus_konfir.php?id=<?php echo $d['barang_id'] ?>"><i class="fa fa-trash"></i></a>
                       </td>
                     </tr>
@@ -89,6 +68,20 @@
                   }
                   ?>
                 </tbody>
+                <tfoot>
+                  <tr class="bg-info">
+                    <th colspan="4" class="text-right">JUMLAH TOTAL:</th>
+                    <th>
+                      <?php 
+                      include '../koneksi.php';
+                      $jumlah = mysqli_query($koneksi, "SELECT SUM(barang_jumlah) as total FROM barang");
+                      $j = mysqli_fetch_assoc($jumlah);
+                      echo number_format($j['total'], 0, ',', '.');
+                      ?>
+                    </th>
+                    <th colspan="3"></th>
+                  </tr>
+                </tfoot>
               </table>
             </div>
           </div>

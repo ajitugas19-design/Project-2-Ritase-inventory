@@ -35,17 +35,23 @@
                     <th>NAMA BARANG</th>
                     <th>REGISTER</th>
                     <th>TANGGAL KELUAR</th>
-                    <th>JUMLAH</th>
                     <th>BERAT</th>
-                    <th>LOKASI</th>
-                    <th>PENERIMA</th>
-                    <th width="8%">OPSI</th>
+                    <th>Lokasi Asal</th>
+                    <th>Lokasi Tujuan</th>
+                    <th width="12%">OPSI</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php 
+                  include '../koneksi.php';
                   $no=1;
-                  $data = mysqli_query($koneksi,"SELECT * FROM barang_keluar ORDER BY bk_id DESC");
+                  $data = mysqli_query($koneksi,"SELECT bk.*, 
+                    g1.lokasi_asal as nama_gudang,
+                    g2.lokasi_tujuan as nama_gudang2
+                    FROM barang_keluar bk
+                    LEFT JOIN gudang g1 ON bk.bk_id_gudang = g1.gudang_id
+                    LEFT JOIN gudang_2 g2 ON bk.bk_id_gudang2 = g2.gudang2_id
+                    ORDER BY bk.bk_id DESC");
                   while($d = mysqli_fetch_array($data)){
                     ?>
                     <tr>
@@ -53,12 +59,14 @@
                       <td><?php echo $d['bk_nama_barang']; ?></td>
                       <td><?php echo $d['bk_register']; ?></td>
                       <td><?php echo $d['bk_tgl_keluar']; ?></td>
-                      <td class="text-center"><?php echo $d['bk_jumlah_keluar']; ?></td>
                       <td><?php echo $d['bk_berat']; ?></td>
-                      <td><?php echo $d['bk_lokasi']; ?></td>
-                      <td><?php echo $d['bk_penerima']; ?></td>
+                      <td><?php echo $d['nama_gudang']; ?></td>
+                      <td><?php echo $d['nama_gudang2']; ?></td>
                       <td class="text-center">                        
-                        <a class="btn btn-danger btn-xs" href="barang_keluar_hapus.php?id=<?php echo $d['bk_id'] ?>" onclick="return confirm('Yakin ingin hapus?')">
+                        <a class="btn btn-warning btn-xs" href="barang_keluar_edit.php?id=<?php echo $d['bk_id'] ?>" title="Edit" style="margin-right: 3px;">
+                          <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn btn-danger btn-xs" href="barang_keluar_hapus.php?id=<?php echo $d['bk_id'] ?>" onclick="return confirm('Yakin ingin hapus?')" title="Hapus" style="margin-left: 3px;">
                           <i class="fa fa-trash"></i>
                         </a>
                       </td>
@@ -95,10 +103,12 @@
                 <option value=""> - Pilih Barang - </option>
                 <?php 
                 $barang = mysqli_query($koneksi,"SELECT * from barang");
-                while($b=mysqli_fetch_array($barang)){
-                  ?>
-                  <option value="<?php echo $b['barang_id']; ?>"><?php echo $b['barang_nama']; ?></option>
-                  <?php 
+                if($barang){
+                  while($b=mysqli_fetch_array($barang)){
+                    ?>
+                    <option value="<?php echo $b['barang_id']; ?>"><?php echo $b['barang_nama']; ?></option>
+                    <?php 
+                  }
                 }
                 ?>
               </select>
@@ -108,49 +118,59 @@
           <div class="form-group">
             <label class="col-sm-3 control-label">Register</label>
             <div class="col-sm-9">
-              <input type="number" class="form-control" name="register" required="required" placeholder="Masukkan Register">
+              <input type="text" class="form-control" name="register" placeholder="Register">
             </div>
           </div>
 
           <div class="form-group">
-            <label class="col-sm-3 control-label">Tanggal</label>
+            <label class="col-sm-3 control-label">Tanggal Keluar</label>
             <div class="col-sm-9">
               <input type="text" class="form-control datepicker" autocomplete="off" name="tanggal" required="required" placeholder="Tanggal Keluar" id="datepicker">
             </div>
           </div>
 
           <div class="form-group">
-            <label class="col-sm-3 control-label">Jumlah</label>
-            <div class="col-sm-9">
-              <input type="number" class="form-control" name="jumlah" required="required" placeholder="Jumlah">
-            </div>
-          </div>
-
-          <div class="form-group">
             <label class="col-sm-3 control-label">Berat</label>
             <div class="col-sm-9">
-              <input type="number" class="form-control" name="berat" placeholder="Berat">
+              <input type="text" class="form-control" name="berat" placeholder="Berat">
             </div>
           </div>
 
           <div class="form-group">
-            <label class="col-sm-3 control-label">Lokasi</label>
+            <label class="col-sm-3 control-label">Lokasi Asal</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" name="lokasi" placeholder="Lokasi">
+              <select class="form-control" name="id_gudang">
+                <option value=""> - Pilih Gudang - </option>
+                <?php 
+                $gudang = mysqli_query($koneksi,"SELECT * from gudang");
+                if($gudang){
+                  while($g=mysqli_fetch_array($gudang)){
+                    ?>
+                    <option value="<?php echo $g['gudang_id']; ?>"><?php echo $g['lokasi_asal']; ?></option>
+                    <?php 
+                  }
+                }
+                ?>
+              </select>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="col-sm-3 control-label">Penerima</label>
+            <label class="col-sm-3 control-label">Lokasi Tujuan</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" name="penerima" placeholder="Penerima">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="col-sm-3 control-label">Keterangan</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" name="keterangan" placeholder="Keterangan">
+              <select class="form-control" name="id_gudang2">
+                <option value=""> - Pilih Gudang 2 - </option>
+                <?php 
+                $gudang2 = mysqli_query($koneksi,"SELECT * from gudang_2");
+                if($gudang2){
+                  while($g2=mysqli_fetch_array($gudang2)){
+                    ?>
+                    <option value="<?php echo $g2['gudang2_id']; ?>"><?php echo $g2['lokasi_tujuan']; ?></option>
+                    <?php 
+                  }
+                }
+                ?>
+              </select>
             </div>
           </div>
 
@@ -178,7 +198,7 @@ $(document).ready(function(){
     'scrollX'     : false,
     'responsive'  : true,
     "pageLength": 10,
-    "order": [[ 3, "desc" ]], // Default urutkan berdasarkan kolom ke-4 (tanggal) descending
+    "order": [[ 3, "desc" ]], 
     'language': {
       'search': 'Pencarian:',
       'lengthMenu': 'Tampilkan _MENU_ data per halaman',
@@ -193,6 +213,13 @@ $(document).ready(function(){
       }
     }
   });
+  
+  // Datepicker with auto set current date
+  $('.datepicker').datepicker({
+    autoclose: true,
+    format: 'yyyy-mm-dd',
+    todayHighlight: true
+  }).datepicker('setDate', new Date());
 });
 </script>
 

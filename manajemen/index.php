@@ -50,37 +50,21 @@
         </div>
       </div>
 
-      <div class="col-lg-3 col-xs-6">
+      <!-- <div class="col-lg-3 col-xs-6">
         <div class="small-box bg-red">
           <div class="inner">
             <?php 
-            $suplier = mysqli_query($koneksi,"SELECT * FROM suplier");
+            $gudang = mysqli_query($koneksi,"SELECT * FROM gudang");
             ?>
-            <h3><?php echo mysqli_num_rows($suplier); ?></h3>
-            <p>Suplier</p>
+            <h3><?php echo mysqli_num_rows($gudang); ?></h3>
+            <p>Gudang</p>
           </div>
           <div class="icon">
             <i class="ion ion-pie-graph"></i>
           </div>
-          <a href="suplier.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          <a href="gudang.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
-      </div>
-
-      <div class="col-lg-3 col-xs-6">
-        <div class="small-box bg-aqua">
-          <div class="inner">
-            <?php 
-            $pinjam = mysqli_query($koneksi,"SELECT * FROM pinjam");
-            ?>
-            <h3><?php echo mysqli_num_rows($pinjam); ?></h3>
-            <p>Transaksi Peminjaman</p>
-          </div>
-          <div class="icon">
-            <i class="ion ion-android-list"></i>
-          </div>
-          <a href="peminjaman.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
-      </div>
+      </div> -->
 
       <div class="col-lg-3 col-xs-6">
         <div class="small-box bg-primary">
@@ -145,38 +129,6 @@
             <i class="ion ion-android-list"></i>
           </div>
           <a href="barang_keluar.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
-      </div>
-
-       <div class="col-lg-3 col-xs-6">
-        <div class="small-box bg-green">
-          <div class="inner">
-            <?php 
-            $peminjaman = mysqli_query($koneksi,"SELECT * FROM pinjam WHERE pinjam_status='dikembalikan'");
-            ?>
-            <h3><?php echo mysqli_num_rows($peminjaman); ?></h3>
-            <p>Peminjaman Dikembalikan</p>
-          </div>
-          <div class="icon">
-            <i class="ion ion-android-list"></i>
-          </div>
-          <a href="peminjaman.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
-      </div>
-
-      <div class="col-lg-3 col-xs-6">
-        <div class="small-box bg-red">
-          <div class="inner">
-            <?php 
-            $peminjaman = mysqli_query($koneksi,"SELECT * FROM pinjam WHERE pinjam_status='dipinjam'");
-            ?>
-            <h3><?php echo mysqli_num_rows($peminjaman); ?></h3>
-            <p>Peminjaman Belum Dikembalikan</p>
-          </div>
-          <div class="icon">
-            <i class="ion ion-android-list"></i>
-          </div>
-          <a href="peminjaman.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
       </div>
 

@@ -30,13 +30,17 @@
               while($d = mysqli_fetch_array($data)){
                 ?>
                 <div class="form-group">
+                  <label>Kode</label>
+                  <input type="text" class="form-control" readonly value="<?php echo $d['barang_id'] ?>">
+                </div>
+                <div class="form-group">
                   <label>Nama</label>
                   <input type="hidden" name="id" value="<?php echo $d['barang_id'] ?>">
                   <input type="text" class="form-control" name="nama" required="required" placeholder="Masukkan Nama .." value="<?php echo $d['barang_nama'] ?>">
                 </div>
                 <div class="form-group">
-                  <label>Spesifikasi</label>
-                  <input type="text" class="form-control" name="spesifikasi" required="required" placeholder="Masukkan spesifikasi .." value="<?php echo $d['barang_spesifikasi'] ?>">
+                  <label>Register</label>
+                  <input type="text" class="form-control" name="register" placeholder="Masukkan Register .." value="<?php echo $d['barang_register'] ?>">
                 </div>
                 <div class="form-group">
                   <label>Lokasi</label>
@@ -44,32 +48,8 @@
                 </div>
 
                 <div class="form-group">
-                  <label>Kondisi</label>
-                  <input type="text" class="form-control" name="kondisi" required="required" placeholder="Masukkan kondisi .." value="<?php echo $d['barang_kondisi'] ?>">
-                </div>
-
-                <div class="form-group">
                   <label>Jumlah</label>
                   <input type="number" class="form-control" name="jumlah" required="required" placeholder="Masukkan jumlah .." value="<?php echo $d['barang_jumlah'] ?>">
-                </div>
-
-                <div class="form-group">
-                  <label>Sumber Dana</label>
-                  <input type="text" class="form-control" name="sumber_dana" required="required" placeholder="Masukkan sumber_dana .." value="<?php echo $d['barang_sumber_dana'] ?>">
-                </div>
-
-                <div class="form-group">
-                  <label>Keterangan</label>
-                  <input type="text" class="form-control" name="keterangan" required="required" placeholder="Masukkan keterangan .." value="<?php echo $d['barang_keterangan'] ?>">
-                </div>
-
-                <div class="form-group">
-                  <label>Jenis Barang</label>
-                  <select class="form-control" name="jenis" required="required">
-                    <option value=""> - Pilih Jenis Barang - </option>
-                    <option <?php if($d['barang_jenis']=="Sarana"){echo "selected='selected'";} ?> value="Sarana">Sarana</option>
-                    <option <?php if($d['barang_jenis']=="Prasarana"){echo "selected='selected'";} ?> value="Prasarana">Prasarana</option>
-                  </select>
                 </div>
 
                 <div class="form-group">

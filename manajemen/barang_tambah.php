@@ -28,42 +28,20 @@
                 <label>Nama</label>
                 <input type="text" class="form-control" name="nama" required="required" placeholder="Masukkan Nama ..">
               </div>
+
               <div class="form-group">
-                <label>Spesifikasi</label>
-                <input type="text" class="form-control" name="spesifikasi" required="required" placeholder="Masukkan spesifikasi ..">
+                <label>Register</label>
+                <input type="text" class="form-control" name="register" placeholder="Masukkan Register ..">
               </div>
+
               <div class="form-group">
                 <label>Lokasi</label>
                 <input type="text" class="form-control" name="lokasi" required="required" placeholder="Masukkan lokasi ..">
               </div>
 
               <div class="form-group">
-                <label>Kondisi</label>
-                <input type="text" class="form-control" name="kondisi" required="required" placeholder="Masukkan kondisi ..">
-              </div>
-
-              <div class="form-group">
                 <label>Jumlah</label>
                 <input type="number" class="form-control" name="jumlah" required="required" placeholder="Masukkan jumlah ..">
-              </div>
-
-              <div class="form-group">
-                <label>Sumber Dana</label>
-                <input type="text" class="form-control" name="sumber_dana" required="required" placeholder="Masukkan sumber_dana ..">
-              </div>
-
-              <div class="form-group">
-                <label>Keterangan</label>
-                <input type="text" class="form-control" name="keterangan" placeholder="Masukkan keterangan ..">
-              </div>
-
-              <div class="form-group">
-                <label>Jenis Barang</label>
-                <select class="form-control" name="jenis" required="required">
-                  <option value=""> - Pilih Jenis Barang - </option>
-                  <option value="Sarana">Sarana</option>
-                  <option value="Prasarana">Prasarana</option>
-                </select>
               </div>
 
               <div class="form-group">

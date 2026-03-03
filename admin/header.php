@@ -57,11 +57,11 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
 
-<header class="main-header">
+<!--<header class="main-header">
   <a href="index.php" class="logo">
     <span class="logo-mini"><b>SG</b></span>
     <span class="logo-lg"><b>Sistem Gudang</b> LJP</span>
-  </a>
+  </a> -->
 
   <nav class="navbar navbar-static-top">
     <a href="#" class="sidebar-toggle" data-toggle="push-menu"></a>
