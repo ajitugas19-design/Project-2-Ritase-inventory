@@ -100,10 +100,26 @@
       <div class="modal-body">
         <form action="barang_masuk_act.php" method="post" class="form-horizontal">
           
+          <!-- Scan Barcode Section -->
+          <div class="form-group">
+            <label class="col-sm-3 control-label"><i class="fa fa-barcode"></i> Scan Barcode</label>
+            <div class="col-sm-9">
+              <div class="input-group">
+                <input type="text" class="form-control" id="scanBarcodeMasuk" placeholder="Scan barcode untuk auto-fill data barang..." autofocus>
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-info btn-flat" onclick="cariBarcodeMasuk()"><i class="fa fa-search"></i> Cari</button>
+                </span>
+              </div>
+              <small class="text-muted">Scan atau input kode barcode untuk mencari barang secara otomatis</small>
+            </div>
+          </div>
+
+          <hr>
+
           <div class="form-group">
             <label class="col-sm-3 control-label">Barang</label>
             <div class="col-sm-9">
-              <select class="form-control" name="barang" required="required">
+              <select class="form-control" name="barang" id="barangSelect" required="required">
                 <option value=""> - Pilih Barang - </option>
                 <?php 
                 $barang = mysqli_query($koneksi,"SELECT * from barang");
@@ -116,6 +132,13 @@
                 }
                 ?>
               </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Nama Barang</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="namaBarang" placeholder="Nama barang akan terisi otomatis" readonly>
             </div>
           </div>
 
@@ -231,6 +254,53 @@ $(document).ready(function(){
     format: 'yyyy-mm-dd',
     todayHighlight: true
   }).datepicker('setDate', new Date());
+});
+
+// Function to search barcode for barang masuk
+function cariBarcodeMasuk() {
+    var kode = document.getElementById('scanBarcodeMasuk').value;
+    if(kode == "") {
+        alert("Silakan scan atau input kode barcode terlebih dahulu!");
+        return;
+    }
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "../koneksi.php?aksi=cari_barcode&kode=" + kode, true);
+    xhr.onreadystatechange = function() {
+        if(xhr.readyState == 4 && xhr.status == 200) {
+            try {
+                var data = JSON.parse(xhr.responseText);
+                if(data.found) {
+                    var select = document.getElementById('barangSelect');
+                    select.value = data.barang_id;
+                    document.getElementById('namaBarang').value = data.barang_nama;
+                    alert("Barang ditemukan: " + data.barang_nama);
+                } else {
+                    alert("Barang dengan barcode tersebut tidak ditemukan!");
+                }
+            } catch(e) {
+                console.error("Error parsing JSON:", e);
+                alert("Terjadi kesalahan dalam pencarian!");
+            }
+        }
+    };
+    xhr.send();
+}
+
+document.getElementById('scanBarcodeMasuk').addEventListener('keypress', function(e) {
+    if(e.key === 'Enter') {
+        e.preventDefault();
+        cariBarcodeMasuk();
+    }
+});
+
+document.getElementById('barangSelect').addEventListener('change', function() {
+    var selectedOption = this.options[this.selectedIndex];
+    if(this.value != "") {
+        document.getElementById('namaBarang').value = selectedOption.text;
+    } else {
+        document.getElementById('namaBarang').value = "";
+    }
 });
 </script>
 
