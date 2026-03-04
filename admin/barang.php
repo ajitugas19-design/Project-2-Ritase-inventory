@@ -25,6 +25,20 @@
             </div>
           </div>
           <div class="box-body">
+            
+            <!-- Form Pencarian Barcode -->
+            <div class="row" style="margin-bottom: 15px;">
+              <div class="col-md-6">
+                <form method="post" action="" class="form-inline">
+                  <div class="form-group">
+                    <label><i class="fa fa-barcode"></i> Scan Barcode: </label>
+                    <input type="text" name="cari_barcode" class="form-control" placeholder="Scan atau input kode barcode..." autofocus>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Cari</button>
+                    <a href="barang.php" class="btn btn-default"><i class="fa fa-refresh"></i> Reset</a>
+                  </div>
+                </form>
+              </div>
+            </div>
 
 
             <div class="table-responsive">
@@ -33,6 +47,7 @@
                   <tr>
                     <th width="1%">NO</th>
                     <th>KODE</th>
+                    <th>TANGGAL</th>
                     <th>REGISTER</th>
                     <th>NAMA</th>
                     <th>JUMLAH</th>
@@ -44,13 +59,24 @@
                 <tbody>
                   <?php 
                   include '../koneksi.php';
+                  
+                  // Proses pencarian barcode - pencarian spesifik saat discan
+                  $where = "";
+                  if(isset($_POST['cari_barcode']) && $_POST['cari_barcode'] != "") {
+                      $cari = $_POST['cari_barcode'];
+                      // Jika input sama dengan barang_id, cari exact match
+                      // Jika tidak, cari LIKE
+                      $where = "WHERE barang_id = '$cari' OR barang_nama LIKE '%$cari%' OR barang_register LIKE '%$cari%' OR barang_keterangan LIKE '%$cari%'";
+                  }
+                  
                   $no=1;
-                  $data = mysqli_query($koneksi,"SELECT * FROM barang");
+                  $data = mysqli_query($koneksi,"SELECT * FROM barang $where");
                   while($d = mysqli_fetch_array($data)){
                     ?>
                     <tr>
                       <td><?php echo $no++; ?></td>
                       <td><?php echo $d['barang_id']; ?></td>
+                      <td><?php echo isset($d['barang_tanggal']) ? $d['barang_tanggal'] : '-'; ?></td>
                       <td><?php echo $d['barang_register']; ?></td>
                       <td><?php echo $d['barang_nama']; ?></td>
                       <td><?php echo $d['barang_jumlah']; ?></td>
@@ -70,7 +96,7 @@
                 </tbody>
                 <tfoot>
                   <tr class="bg-info">
-                    <th colspan="4" class="text-right">JUMLAH TOTAL:</th>
+                    <th colspan="5" class="text-right">JUMLAH TOTAL:</th>
                     <th>
                       <?php 
                       include '../koneksi.php';

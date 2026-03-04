@@ -40,28 +40,36 @@
       height: calc(100vh - 50px);
       width: 230px;
       z-index: 999;
+      overflow-y: auto;
     }
     .content-wrapper {
-      margin-left: 95px;
-      margin-top: 0px;
+      margin-left: 100px;
+      margin-top: -20px;
       padding: 20px;
       min-height: calc(100vh - 50px);
     }
 
     .sidebar-collapse .main-sidebar { width: 50px; }
     .sidebar-collapse .content-wrapper { margin-left: 50px; }
+
+    @media (max-width: 767px) {
+      .content-wrapper {
+        margin-left: 0;
+      }
+    }
   </style>
 
 </head>
 
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini fixed">
 <div class="wrapper">
 
-<!--<header class="main-header">
-  <a href="index.php" class="logo">
+<!-- HEADER -->
+<header class="main-header">
+  <!--<a href="index.php" class="logo">
     <span class="logo-mini"><b>SG</b></span>
     <span class="logo-lg"><b>Sistem Gudang</b> LJP</span>
-  </a> -->
+  </a>-->
 
   <nav class="navbar navbar-static-top">
     <a href="#" class="sidebar-toggle" data-toggle="push-menu"></a>
@@ -87,6 +95,7 @@
   </nav>
 </header>
 
+<!-- SIDEBAR -->
 <aside class="main-sidebar">
 <section class="sidebar">
 

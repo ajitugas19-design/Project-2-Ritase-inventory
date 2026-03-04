@@ -33,9 +33,11 @@
                 <thead>
                   <tr class="bg-primary text-center">
                     <th width="5%">NO</th>
-                    <th>NO REGISTER</th>
+                    <th>KODE</th>
                     <th>NAMA BARANG</th>
+                    <th>REGISTER</th>
                     <th>TANGGAL MASUK</th>
+                    <th>JUMLAH</th>
                     <th>BERAT</th>
                     <th>LOKASI ASAL</th>
                     <th>LOKASI TUJUAN</th>
@@ -56,9 +58,11 @@
                   ?>
                   <tr>
                     <td class="text-center"><?php echo $no++; ?></td>
+                    <td><?php echo $d['bm_id_barang']; ?></td>
                     <td><?php echo $d['bm_nama_barang']; ?></td>
                     <td><?php echo $d['bm_register']; ?></td>
                     <td><?php echo $d['bm_tgl_masuk']; ?></td>
+                    <td><?php echo $d['bm_jumlah']; ?></td>
                     <td><?php echo $d['bm_berat']; ?></td>
                     <td><?php echo $d['nama_gudang']; ?></td>
                     <td><?php echo $d['nama_gudang2']; ?></td>
@@ -125,7 +129,7 @@
           <div class="form-group">
             <label class="col-sm-3 control-label">Tanggal Masuk</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control datepicker" autocomplete="off" name="tanggal" required="required" placeholder="Tanggal Masuk" id="datepicker">
+              <input type="date" class="form-control" name="tanggal" required="required" value="<?php echo date('Y-m-d'); ?>">
             </div>
           </div>
 
@@ -205,7 +209,7 @@ $(document).ready(function(){
     scrollX: false,
     responsive: true,
     pageLength: 10,
-    order: [[3,"desc"]],
+    order: [[4,"desc"]],
     language: {
       search: 'Pencarian:',
       lengthMenu: 'Tampilkan _MENU_ data per halaman',

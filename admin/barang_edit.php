@@ -30,17 +30,13 @@
               while($d = mysqli_fetch_array($data)){
                 ?>
                 <div class="form-group">
-                  <label>Kode</label>
+                  <label>No</label>
                   <input type="text" class="form-control" readonly value="<?php echo $d['barang_id'] ?>">
+                  <input type="hidden" name="id" value="<?php echo $d['barang_id'] ?>">
                 </div>
                 <div class="form-group">
                   <label>Nama</label>
-                  <input type="hidden" name="id" value="<?php echo $d['barang_id'] ?>">
                   <input type="text" class="form-control" name="nama" required="required" placeholder="Masukkan Nama .." value="<?php echo $d['barang_nama'] ?>">
-                </div>
-                <div class="form-group">
-                  <label>Register</label>
-                  <input type="text" class="form-control" name="register" placeholder="Masukkan Register .." value="<?php echo $d['barang_register'] ?>">
                 </div>
                 <div class="form-group">
                   <label>Lokasi</label>
@@ -50,6 +46,11 @@
                 <div class="form-group">
                   <label>Jumlah</label>
                   <input type="number" class="form-control" name="jumlah" required="required" placeholder="Masukkan jumlah .." value="<?php echo $d['barang_jumlah'] ?>">
+                </div>
+
+                <div class="form-group">
+                  <label>Barcode</label>
+                  <input type="text" class="form-control" name="barcode" placeholder="Masukkan kode barcode..." value="<?php echo $d['barang_keterangan'] ?>">
                 </div>
 
                 <div class="form-group">

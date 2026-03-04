@@ -2,9 +2,9 @@
 include '../koneksi.php';
 $id  = $_POST['id'];
 $nama  = $_POST['nama'];
-$register = $_POST['register'];
 $lokasi = $_POST['lokasi'];
-$jumlah = $_POST['jumlah'];
+$jumlah = (int)$_POST['jumlah'];
+$barcode = $_POST['barcode'];
 
-mysqli_query($koneksi, "update barang set barang_nama='$nama', barang_register='$register', barang_lokasi='$lokasi', barang_jumlah='$jumlah' where barang_id='$id'");
+mysqli_query($koneksi, "update barang set barang_nama='$nama', barang_lokasi='$lokasi', barang_jumlah='$jumlah', barang_keterangan='$barcode' where barang_id='$id'");
 header("location:barang.php");

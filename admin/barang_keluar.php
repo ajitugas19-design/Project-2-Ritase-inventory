@@ -32,6 +32,7 @@
                 <thead>
                   <tr class="bg-primary text-center">
                     <th width="5%">NO</th>
+                    <th>KODE</th>
                     <th>NAMA BARANG</th>
                     <th>REGISTER</th>
                     <th>TANGGAL KELUAR</th>
@@ -44,6 +45,7 @@
                 </thead>
                 <tbody>
                   <?php 
+                  include '../koneksi.php';
                   $no=1;
                   $data = mysqli_query($koneksi,"SELECT bk.*, 
                     g1.lokasi_asal as nama_gudang,
@@ -56,14 +58,15 @@
                     ?>
                     <tr>
                       <td class="text-center"><?php echo $no++; ?></td>
+                      <td><?php echo $d['bk_id_barang']; ?></td>
                       <td><?php echo $d['bk_nama_barang']; ?></td>
                       <td><?php echo $d['bk_register']; ?></td>
                       <td><?php echo $d['bk_tgl_keluar']; ?></td>
-                      <td class="text-center"><?php echo $d['bk_jumlah_keluar']; ?></td>
+                      <td><?php echo $d['bk_jumlah_keluar']; ?></td>
                       <td><?php echo $d['bk_berat']; ?></td>
-                      <td><?php echo isset($d['nama_gudang']) ? $d['nama_gudang'] : '-'; ?></td>
-                      <td><?php echo isset($d['nama_gudang2']) ? $d['nama_gudang2'] : '-'; ?></td>
-                      <td class="text-center">
+                      <td><?php echo $d['nama_gudang']; ?></td>
+                      <td><?php echo $d['nama_gudang2']; ?></td>
+                      <td class="text-center">                        
                         <a class="btn btn-warning btn-xs" href="barang_keluar_edit.php?id=<?php echo $d['bk_id'] ?>" title="Edit" style="margin-right: 3px;">
                           <i class="fa fa-edit"></i>
                         </a>
@@ -76,20 +79,6 @@
                   }
                   ?>
                 </tbody>
-                <tfoot>
-                  <tr class="bg-info">
-                    <th colspan="4" class="text-right">JUMLAH TOTAL:</th>
-                    <th class="text-center">
-                      <?php 
-                      include '../koneksi.php';
-                      $jumlah = mysqli_query($koneksi, "SELECT SUM(bk_jumlah_keluar) as total FROM barang_keluar");
-                      $j = mysqli_fetch_assoc($jumlah);
-                      echo number_format($j['total'], 0, ',', '.');
-                      ?>
-                    </th>
-                    <th colspan="4"></th>
-                  </tr>
-                </tfoot>
               </table>
             </div>
           </div>
@@ -118,10 +107,12 @@
                 <option value=""> - Pilih Barang - </option>
                 <?php 
                 $barang = mysqli_query($koneksi,"SELECT * from barang");
-                while($b=mysqli_fetch_array($barang)){
-                  ?>
-                  <option value="<?php echo $b['barang_id']; ?>"><?php echo $b['barang_nama']; ?></option>
-                  <?php 
+                if($barang){
+                  while($b=mysqli_fetch_array($barang)){
+                    ?>
+                    <option value="<?php echo $b['barang_id']; ?>"><?php echo $b['barang_nama']; ?></option>
+                    <?php 
+                  }
                 }
                 ?>
               </select>
@@ -136,9 +127,9 @@
           </div>
 
           <div class="form-group">
-            <label class="col-sm-3 control-label">Tanggal</label>
+            <label class="col-sm-3 control-label">Tanggal Keluar</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control datepicker" autocomplete="off" name="tanggal" required="required" placeholder="Tanggal Keluar" id="datepicker">
+              <input type="date" class="form-control" name="tanggal" required="required" value="<?php echo date('Y-m-d'); ?>">
             </div>
           </div>
 
@@ -152,7 +143,7 @@
           <div class="form-group">
             <label class="col-sm-3 control-label">Berat</label>
             <div class="col-sm-9">
-              <input type="number" class="form-control" name="berat" placeholder="Berat">
+              <input type="text" class="form-control" name="berat" placeholder="Berat">
             </div>
           </div>
 
@@ -160,13 +151,15 @@
             <label class="col-sm-3 control-label">Lokasi Asal</label>
             <div class="col-sm-9">
               <select class="form-control" name="id_gudang">
-                <option value=""> - Pilih Lokasi Asal - </option>
+                <option value=""> - Pilih Gudang - </option>
                 <?php 
                 $gudang = mysqli_query($koneksi,"SELECT * from gudang");
-                while($g=mysqli_fetch_array($gudang)){
-                  ?>
-                  <option value="<?php echo $g['gudang_id']; ?>"><?php echo $g['lokasi_asal']; ?></option>
-                  <?php 
+                if($gudang){
+                  while($g=mysqli_fetch_array($gudang)){
+                    ?>
+                    <option value="<?php echo $g['gudang_id']; ?>"><?php echo $g['lokasi_asal']; ?></option>
+                    <?php 
+                  }
                 }
                 ?>
               </select>
@@ -177,13 +170,15 @@
             <label class="col-sm-3 control-label">Lokasi Tujuan</label>
             <div class="col-sm-9">
               <select class="form-control" name="id_gudang2">
-                <option value=""> - Pilih Lokasi Tujuan - </option>
+                <option value=""> - Pilih Gudang 2 - </option>
                 <?php 
                 $gudang2 = mysqli_query($koneksi,"SELECT * from gudang_2");
-                while($g2=mysqli_fetch_array($gudang2)){
-                  ?>
-                  <option value="<?php echo $g2['gudang2_id']; ?>"><?php echo $g2['lokasi_tujuan']; ?></option>
-                  <?php 
+                if($gudang2){
+                  while($g2=mysqli_fetch_array($gudang2)){
+                    ?>
+                    <option value="<?php echo $g2['gudang2_id']; ?>"><?php echo $g2['lokasi_tujuan']; ?></option>
+                    <?php 
+                  }
                 }
                 ?>
               </select>
@@ -214,7 +209,7 @@ $(document).ready(function(){
     'scrollX'     : false,
     'responsive'  : true,
     "pageLength": 10,
-    "order": [[ 3, "desc" ]], 
+    "order": [[ 4, "desc" ]], 
     'language': {
       'search': 'Pencarian:',
       'lengthMenu': 'Tampilkan _MENU_ data per halaman',
@@ -229,6 +224,13 @@ $(document).ready(function(){
       }
     }
   });
+  
+  // Datepicker with auto set current date
+  $('.datepicker').datepicker({
+    autoclose: true,
+    format: 'yyyy-mm-dd',
+    todayHighlight: true
+  }).datepicker('setDate', new Date());
 });
 </script>
 

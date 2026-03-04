@@ -32,12 +32,14 @@
                 <thead>
                   <tr class="bg-primary text-center">
                     <th width="5%">NO</th>
+                    <th>KODE</th>
                     <th>NAMA BARANG</th>
                     <th>REGISTER</th>
                     <th>TANGGAL KELUAR</th>
+                    <th>JUMLAH</th>
                     <th>BERAT</th>
-                    <th>Lokasi Asal</th>
-                    <th>Lokasi Tujuan</th>
+                    <th>LOKASI ASAL</th>
+                    <th>LOKASI TUJUAN</th>
                     <th width="12%">OPSI</th>
                   </tr>
                 </thead>
@@ -56,9 +58,11 @@
                     ?>
                     <tr>
                       <td class="text-center"><?php echo $no++; ?></td>
+                      <td><?php echo $d['bk_id_barang']; ?></td>
                       <td><?php echo $d['bk_nama_barang']; ?></td>
                       <td><?php echo $d['bk_register']; ?></td>
                       <td><?php echo $d['bk_tgl_keluar']; ?></td>
+                      <td><?php echo $d['bk_jumlah_keluar']; ?></td>
                       <td><?php echo $d['bk_berat']; ?></td>
                       <td><?php echo $d['nama_gudang']; ?></td>
                       <td><?php echo $d['nama_gudang2']; ?></td>
@@ -125,7 +129,14 @@
           <div class="form-group">
             <label class="col-sm-3 control-label">Tanggal Keluar</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control datepicker" autocomplete="off" name="tanggal" required="required" placeholder="Tanggal Keluar" id="datepicker">
+              <input type="date" class="form-control" name="tanggal" required="required" value="<?php echo date('Y-m-d'); ?>">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Jumlah</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="jumlah" required="required" placeholder="Jumlah">
             </div>
           </div>
 
@@ -198,7 +209,7 @@ $(document).ready(function(){
     'scrollX'     : false,
     'responsive'  : true,
     "pageLength": 10,
-    "order": [[ 3, "desc" ]], 
+    "order": [[ 4, "desc" ]], 
     'language': {
       'search': 'Pencarian:',
       'lengthMenu': 'Tampilkan _MENU_ data per halaman',
