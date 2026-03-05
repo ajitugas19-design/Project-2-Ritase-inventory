@@ -26,17 +26,19 @@
           </div>
           <div class="box-body">
             
-            <!-- Form Pencarian Barcode -->
+            <!-- Form Pencarian Barcode (Real-time dengan AJAX) -->
             <div class="row" style="margin-bottom: 15px;">
-              <div class="col-md-6">
-                <form method="post" action="" class="form-inline">
+              <div class="col-md-8">
+                <div class="form-inline">
                   <div class="form-group">
                     <label><i class="fa fa-barcode"></i> Scan Barcode: </label>
-                    <input type="text" name="cari_barcode" class="form-control" placeholder="Scan atau input kode barcode..." autofocus>
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Cari</button>
+                    <input type="text" id="cari_barcode" class="form-control" placeholder="Scan atau input kode barcode..." autofocus>
+                    <button type="button" class="btn btn-primary" onclick="cariBarcode()"><i class="fa fa-search"></i> Cari</button>
+                    <button type="button" class="btn btn-success" onclick="bukaScanner()"><i class="fa fa-camera"></i> Kamera</button>
                     <a href="barang.php" class="btn btn-default"><i class="fa fa-refresh"></i> Reset</a>
                   </div>
-                </form>
+                </div>
+                <div id="hasil_pencarian" style="margin-top: 10px;"></div>
               </div>
             </div>
 
@@ -56,17 +58,15 @@
                     <th width="10%">OPSI</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody id="tabel_barang">
                   <?php 
                   include '../koneksi.php';
                   
-                  // Proses pencarian barcode - pencarian spesifik saat discan
+                  // Default: tampilkan semua data
                   $where = "";
                   if(isset($_POST['cari_barcode']) && $_POST['cari_barcode'] != "") {
                       $cari = $_POST['cari_barcode'];
-                      // Jika input sama dengan barang_id, cari exact match
-                      // Jika tidak, cari LIKE
-                      $where = "WHERE barang_id = '$cari' OR barang_nama LIKE '%$cari%' OR barang_register LIKE '%$cari%' OR barang_keterangan LIKE '%$cari%'";
+                      $where = "WHERE barang_id = '$cari' OR barang_nama LIKE '%$cari%' OR barang_register LIKE '%$cari%' OR barcode LIKE '%$cari%'";
                   }
                   
                   $no=1;
@@ -82,8 +82,13 @@
                       <td><?php echo $d['barang_jumlah']; ?></td>
                       <td><?php echo $d['barang_lokasi']; ?></td>
                       <td>
+                        <?php if(!empty($d['barcode'])): ?>
+                        <img src="../admin/barcode_img.php?text=<?php echo $d['barcode']; ?>" height="60">
+                        <br><small><?php echo $d['barcode']; ?></small>
+                        <?php else: ?>
                         <img src="../admin/barcode_img.php?text=<?php echo $d['barang_id']; ?>" height="60">
                         <br><small><?php echo $d['barang_id']; ?></small>
+                        <?php endif; ?>
                       </td>
                       <td>                        
                         <a class="btn btn-warning btn-sm" href="barang_edit.php?id=<?php echo $d['barang_id'] ?>"><i class="fa fa-edit"></i></a>
@@ -97,7 +102,7 @@
                 <tfoot>
                   <tr class="bg-info">
                     <th colspan="5" class="text-right">JUMLAH TOTAL:</th>
-                    <th>
+                    <th id="total_jumlah">
                       <?php 
                       include '../koneksi.php';
                       $jumlah = mysqli_query($koneksi, "SELECT SUM(barang_jumlah) as total FROM barang");
@@ -118,4 +123,103 @@
   </section>
 
 </div>
+
+<script>
+function cariBarcode() {
+    var kode = document.getElementById('cari_barcode').value;
+    if(kode == "") {
+        location.href = 'barang.php';
+        return;
+    }
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "../koneksi.php?aksi=cari_barcode&kode=" + encodeURIComponent(kode), true);
+    xhr.onreadystatechange = function() {
+        if(xhr.readyState == 4 && xhr.status == 200) {
+            try {
+                var data = JSON.parse(xhr.responseText);
+                var tabelBody = document.getElementById('tabel_barang');
+                var totalJumlah = document.getElementById('total_jumlah');
+                
+                if(data.found) {
+                    var barcodeImg = data.barcode ? data.barcode : data.barang_id;
+                    var html = '<tr>' +
+                        '<td>1</td>' +
+                        '<td>' + data.barang_id + '</td>' +
+                        '<td>-</td>' +
+                        '<td>-</td>' +
+                        '<td>' + data.barang_nama + '</td>' +
+                        '<td>' + data.barang_jumlah + '</td>' +
+                        '<td>' + data.barang_lokasi + '</td>' +
+                        '<td><img src="../admin/barcode_img.php?text=' + barcodeImg + '" height="60"><br><small>' + barcodeImg + '</small></td>' +
+                        '<td>' +
+                        '<a class="btn btn-warning btn-sm" href="barang_edit.php?id=' + data.barang_id + '"><i class="fa fa-edit"></i></a> ' +
+                        '<a class="btn btn-danger btn-sm" href="barang_hapus_konfir.php?id=' + data.barang_id + '"><i class="fa fa-trash"></i></a>' +
+                        '</td></tr>';
+                    
+                    tabelBody.innerHTML = html;
+                    totalJumlah.innerHTML = data.barang_jumlah;
+                    
+                    document.getElementById('hasil_pencarian').innerHTML = 
+                        '<div class="alert alert-success"><i class="fa fa-check"></i> Ditemukan: ' + data.barang_nama + ' (Barcode: ' + barcodeImg + ')</div>';
+                } else {
+                    tabelBody.innerHTML = '<tr><td colspan="9" class="text-center alert alert-warning">Barang tidak ditemukan. <a href="barang_tambah.php">Tambah barang baru?</a></td></tr>';
+                    totalJumlah.innerHTML = '0';
+                    
+                    document.getElementById('hasil_pencarian').innerHTML = 
+                        '<div class="alert alert-warning"><i class="fa fa-warning"></i> Barang dengan barcode "' + kode + '" tidak ditemukan</div>';
+                }
+            } catch(e) {
+                console.error("Error:", e);
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'barang.php';
+                
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'cari_barcode';
+                input.value = kode;
+                
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    };
+    xhr.send();
+}
+
+function bukaScanner() {
+    window.open('../admin/barcode_scanner.php', 'ScannerBarcode', 'width=500,height=600,scrollbars=yes');
+}
+
+window.addEventListener('message', function(event) {
+    if(event.data && event.data.type === 'barcodeScan') {
+        var barcode = event.data.barcode;
+        document.getElementById('cari_barcode').value = barcode;
+        cariBarcode();
+    }
+});
+
+document.getElementById('cari_barcode').addEventListener('keypress', function(e) {
+    if(e.key === 'Enter') {
+        e.preventDefault();
+        cariBarcode();
+    }
+});
+
+let searchTimeout;
+document.getElementById('cari_barcode').addEventListener('input', function(e) {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+        var kode = e.target.value;
+        if(kode.length >= 3) {
+            cariBarcode();
+        } else if(kode == "") {
+            location.href = 'barang.php';
+        }
+    }, 300);
+});
+</script>
+
 <?php include 'footer.php'; ?>

@@ -50,7 +50,7 @@
 
                 <div class="form-group">
                   <label>Barcode</label>
-                  <input type="text" class="form-control" name="barcode" placeholder="Masukkan kode barcode..." value="<?php echo $d['barang_keterangan'] ?>">
+                  <input type="text" class="form-control" name="barcode" placeholder="Masukkan kode barcode..." value="<?php echo isset($d['barcode']) ? $d['barcode'] : '' ?>">
                 </div>
 
                 <div class="form-group">

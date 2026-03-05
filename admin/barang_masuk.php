@@ -100,7 +100,7 @@
       <div class="modal-body">
         <form action="barang_masuk_act.php" method="post" class="form-horizontal">
           
-          <!-- Scan Barcode Section -->
+<!-- Scan Barcode Section -->
           <div class="form-group">
             <label class="col-sm-3 control-label"><i class="fa fa-barcode"></i> Scan Barcode</label>
             <div class="col-sm-9">
@@ -108,6 +108,7 @@
                 <input type="text" class="form-control" id="scanBarcodeMasuk" placeholder="Scan barcode untuk auto-fill data barang..." autofocus>
                 <span class="input-group-btn">
                   <button type="button" class="btn btn-info btn-flat" onclick="cariBarcodeMasuk()"><i class="fa fa-search"></i> Cari</button>
+                  <button type="button" class="btn btn-success btn-flat" onclick="bukaScannerMasuk()"><i class="fa fa-camera"></i> Kamera</button>
                 </span>
               </div>
               <small class="text-muted">Scan atau input kode barcode untuk mencari barang secara otomatis</small>
@@ -286,6 +287,20 @@ function cariBarcodeMasuk() {
     };
     xhr.send();
 }
+
+// Function to open barcode scanner camera
+function bukaScannerMasuk() {
+    window.open('barcode_scanner.php', 'ScannerBarcode', 'width=500,height=600,scrollbars=yes');
+}
+
+// Listen for messages from barcode scanner window
+window.addEventListener('message', function(event) {
+    if(event.data && event.data.type === 'barcodeScan') {
+        var barcode = event.data.barcode;
+        document.getElementById('scanBarcodeMasuk').value = barcode;
+        cariBarcodeMasuk();
+    }
+});
 
 document.getElementById('scanBarcodeMasuk').addEventListener('keypress', function(e) {
     if(e.key === 'Enter') {

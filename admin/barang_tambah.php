@@ -24,13 +24,14 @@
           </div>
           <div class="box-body">
             <form action="barang_act.php" method="post" id="formBarang">
-              <!-- Scan Barcode Field -->
+<!-- Scan Barcode Field -->
               <div class="form-group">
                 <label><i class="fa fa-barcode"></i> Scan Barcode (Opsional)</label>
                 <div class="input-group">
                   <input type="text" class="form-control" id="scanBarcode" placeholder="Scan barcode untuk auto-fill data..." autofocus>
                   <span class="input-group-btn">
                     <button type="button" class="btn btn-info btn-flat" onclick="cariBarcode()"><i class="fa fa-search"></i> Cari</button>
+                    <button type="button" class="btn btn-success btn-flat" onclick="bukaScanner()"><i class="fa fa-camera"></i> Kamera</button>
                   </span>
                 </div>
               </div>
@@ -92,7 +93,8 @@ function cariBarcode() {
             document.getElementById('nama').value = data.barang_nama;
             document.getElementById('lokasi').value = data.barang_lokasi;
             document.getElementById('jumlah').value = data.barang_jumlah;
-            document.getElementById('barcode').value = data.barang_keterangan;
+            // Use barcode field from database
+            document.getElementById('barcode').value = data.barcode || '';
             alert("Data barang ditemukan!");
         } else {
             alert("Barang dengan kode tersebut tidak ditemukan. Anda dapat menambah barang baru.");
@@ -105,6 +107,22 @@ function cariBarcode() {
         document.getElementById('barcode').value = kode;
     });
 }
+
+// Function to open barcode scanner camera
+function bukaScanner() {
+    // Open scanner in new window
+    window.open('barcode_scanner.php', 'ScannerBarcode', 'width=500,height=600,scrollbars=yes');
+}
+
+// Listen for messages from barcode scanner window
+window.addEventListener('message', function(event) {
+    if(event.data && event.data.type === 'barcodeScan') {
+        var barcode = event.data.barcode;
+        document.getElementById('scanBarcode').value = barcode;
+        // Automatically search after scan
+        cariBarcode();
+    }
+});
 
 // Handle Enter key pada scan barcode
 document.getElementById('scanBarcode').addEventListener('keypress', function(e) {
