@@ -49,6 +49,16 @@
                 </div>
 
                 <div class="form-group">
+                  <label>Register</label>
+                  <input type="text" class="form-control" name="register" placeholder="Masukkan nomor register..." value="<?php echo isset($d['barang_register']) ? $d['barang_register'] : '' ?>">
+                </div>
+
+                <div class="form-group">
+                  <label>Tanggal</label>
+                  <input type="date" class="form-control" name="tanggal" required="required" value="<?php echo isset($d['barang_tanggal']) ? $d['barang_tanggal'] : '' ?>">
+                </div>
+
+                <div class="form-group">
                   <label>Barcode</label>
                   <input type="text" class="form-control" name="barcode" placeholder="Masukkan kode barcode..." value="<?php echo isset($d['barcode']) ? $d['barcode'] : '' ?>">
                 </div>

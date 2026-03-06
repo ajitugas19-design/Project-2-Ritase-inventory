@@ -2,167 +2,189 @@
 
 <div class="content-wrapper">
 
-  <section class="content-header">
-    <h1>
-      Dashboard
-      <small>Control panel</small>
-    </h1>
-    <ol class="breadcrumb">
-      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">Dashboard</li>
-    </ol>
-  </section>
+<section class="content-header">
+  <h1>
+    Dashboard
+    <small>Control Panel</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li class="active">Dashboard</li>
+  </ol>
+</section>
 
+<section class="content">
 
-  <section class="content">
+<?php
+// QUERY DATA
+$q_barang = mysqli_query($koneksi,"SELECT COUNT(*) as total FROM barang");
+$data_barang = mysqli_fetch_assoc($q_barang);
 
-    <div class="row">
+$q_user = mysqli_query($koneksi,"SELECT COUNT(*) as total FROM user");
+$data_user = mysqli_fetch_assoc($q_user);
 
-      <div class="col-lg-3 col-xs-6">
-        <div class="small-box bg-green">
-          <div class="inner">
-            <?php 
-            $barang = mysqli_query($koneksi,"SELECT * FROM barang");
-            ?>
-            <h3><?php echo mysqli_num_rows($barang); ?></h3>
-            <p>Model Barang</p>
-          </div>
-          <div class="icon">
-            <i class="ion ion-stats-bars"></i>
-          </div>
-          <a href="barang.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
-      </div>
+$q_barang_masuk = mysqli_query($koneksi,"SELECT SUM(bm_jumlah) as total FROM barang_masuk");
+$data_barang_masuk = mysqli_fetch_assoc($q_barang_masuk);
 
-      <div class="col-lg-3 col-xs-6">
-        <div class="small-box bg-yellow">
-          <div class="inner">
-            <?php 
-            $user = mysqli_query($koneksi,"SELECT * FROM user");
-            ?>
-            <h3><?php echo mysqli_num_rows($user); ?></h3>
-            <p>Pengguna</p>
-          </div>
-          <div class="icon">
-            <i class="ion ion-person-add"></i>
-          </div>
-          <a href="user.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
-      </div>
-<!--    <div class="col-lg-3 col-xs-6">
-        <div class="small-box bg-red">
-          <div class="inner">
-            <?php 
-            $gudang = mysqli_query($koneksi,"SELECT * FROM gudang");
-            ?>
-            <h3><?php echo mysqli_num_rows($gudang); ?></h3>
-            <p>Gudang</p>
-          </div>
-          <div class="icon">
-            <i class="ion ion-pie-graph"></i>
-          </div>
-          <a href="gudang.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
-      </div>  -->
+$q_barang_keluar = mysqli_query($koneksi,"SELECT SUM(bk_jumlah_keluar) as total FROM barang_keluar");
+$data_barang_keluar = mysqli_fetch_assoc($q_barang_keluar);
 
-      <div class="col-lg-3 col-xs-6">
-        <div class="small-box bg-primary">
-          <div class="inner">
-            <?php 
-            $barang_masuk = mysqli_query($koneksi,"SELECT sum(bm_jumlah) as total_barang_masuk FROM barang_masuk");
-            $bm = mysqli_fetch_assoc($barang_masuk);
-            ?>
-            <h3><?php echo $bm['total_barang_masuk']; ?></h3>
-            <p>Total Barang Masuk</p>
-          </div>
-          <div class="icon">
-            <i class="ion ion-android-list"></i>
-          </div>
-          <a href="barang_masuk.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
-      </div>
+$q_transaksi_masuk = mysqli_query($koneksi,"SELECT COUNT(*) as total FROM barang_masuk");
+$data_transaksi_masuk = mysqli_fetch_assoc($q_transaksi_masuk);
 
-      <div class="col-lg-3 col-xs-6">
-        <div class="small-box bg-purple">
-          <div class="inner">
-            <?php 
-            $barang_keluar = mysqli_query($koneksi,"SELECT sum(bk_jumlah_keluar) as total_barang_keluar FROM barang_keluar");
-            $bk = mysqli_fetch_assoc($barang_keluar);
-            ?>
-            <h3><?php echo $bk['total_barang_keluar']; ?></h3>
-            <p>Total Barang Keluar</p>
-          </div>
-          <div class="icon">
-            <i class="ion ion-android-list"></i>
-          </div>
-          <a href="barang_keluar.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
-      </div>
+$q_transaksi_keluar = mysqli_query($koneksi,"SELECT COUNT(*) as total FROM barang_keluar");
+$data_transaksi_keluar = mysqli_fetch_assoc($q_transaksi_keluar);
+?>
 
-      <div class="col-lg-3 col-xs-6">
-        <div class="small-box bg-orange">
-          <div class="inner">
-            <?php 
-            $barang_masuk = mysqli_query($koneksi,"SELECT * FROM barang_masuk");
-            ?>
-            <h3><?php echo mysqli_num_rows($barang_masuk); ?></h3>
-            <p>Total Transaksi Barang Masuk</p>
-          </div>
-          <div class="icon">
-            <i class="ion ion-android-list"></i>
-          </div>
-          <a href="barang_masuk.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
-      </div>
+<div class="row">
 
-      <div class="col-lg-3 col-xs-6">
-        <div class="small-box bg-blue">
-          <div class="inner">
-            <?php 
-            $barang_keluar = mysqli_query($koneksi,"SELECT * FROM barang_keluar");
-            ?>
-            <h3><?php echo mysqli_num_rows($barang_keluar); ?></h3>
-            <p>Total Transaksi Barang Keluar</p>
-          </div>
-          <div class="icon">
-            <i class="ion ion-android-list"></i>
-          </div>
-          <a href="barang_keluar.php" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
-      </div>
-
+<!-- Model Barang -->
+<div class="col-lg-3 col-xs-6">
+  <div class="small-box bg-green">
+    <div class="inner">
+      <h3><?php echo $data_barang['total']; ?></h3>
+      <p>Model Barang</p>
     </div>
-
-    <div class="row">    
-      <section class="col-lg-7">
-
-        <div class="box box-info">
-          <div class="box-header">
-            <h3 class="box-title">Detail Login</h3>
-          </div>
-          <div class="box-body">
-            <table class="table table-bordered">
-              <tr>
-                <th width="30%">Nama</th>
-                <td><?php echo $_SESSION['nama']; ?></td>
-              </tr>
-              <tr>
-                <th>Username</th>
-                <td><?php echo $_SESSION['username']; ?></td>
-              </tr>
-              <tr>
-                <th>Level Hak Akses</th>
-                <td>
-                  <span class="label label-success text-uppercase"><?php echo $_SESSION['level']; ?></span>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </div>
-      </section>
+    <div class="icon">
+      <i class="ion ion-stats-bars"></i>
     </div>
+    <a href="barang.php" class="small-box-footer">
+      More info <i class="fa fa-arrow-circle-right"></i>
+    </a>
+  </div>
+</div>
 
-  </section>
+<!-- Pengguna -->
+<div class="col-lg-3 col-xs-6">
+  <div class="small-box bg-yellow">
+    <div class="inner">
+      <h3><?php echo $data_user['total']; ?></h3>
+      <p>Pengguna</p>
+    </div>
+    <div class="icon">
+      <i class="ion ion-person-add"></i>
+    </div>
+    <a href="user.php" class="small-box-footer">
+      More info <i class="fa fa-arrow-circle-right"></i>
+    </a>
+  </div>
+</div>
+
+<!-- Total Barang Masuk -->
+<div class="col-lg-3 col-xs-6">
+  <div class="small-box bg-primary">
+    <div class="inner">
+      <h3><?php echo $data_barang_masuk['total'] ?? 0; ?></h3>
+      <p>Total Barang Masuk</p>
+    </div>
+    <div class="icon">
+      <i class="ion ion-android-download"></i>
+    </div>
+    <a href="barang_masuk.php" class="small-box-footer">
+      More info <i class="fa fa-arrow-circle-right"></i>
+    </a>
+  </div>
+</div>
+
+<!-- Total Barang Keluar -->
+<div class="col-lg-3 col-xs-6">
+  <div class="small-box bg-purple">
+    <div class="inner">
+      <h3><?php echo $data_barang_keluar['total'] ?? 0; ?></h3>
+      <p>Total Barang Keluar</p>
+    </div>
+    <div class="icon">
+      <i class="ion ion-android-upload"></i>
+    </div>
+    <a href="barang_keluar.php" class="small-box-footer">
+      More info <i class="fa fa-arrow-circle-right"></i>
+    </a>
+  </div>
+</div>
 
 </div>
+
+
+<div class="row">
+
+<!-- Transaksi Barang Masuk -->
+<div class="col-lg-3 col-xs-6">
+  <div class="small-box bg-orange">
+    <div class="inner">
+      <h3><?php echo $data_transaksi_masuk['total']; ?></h3>
+      <p>Total Transaksi Barang Masuk</p>
+    </div>
+    <div class="icon">
+      <i class="ion ion-document-text"></i>
+    </div>
+    <a href="barang_masuk.php" class="small-box-footer">
+      More info <i class="fa fa-arrow-circle-right"></i>
+    </a>
+  </div>
+</div>
+
+<!-- Transaksi Barang Keluar -->
+<div class="col-lg-3 col-xs-6">
+  <div class="small-box bg-blue">
+    <div class="inner">
+      <h3><?php echo $data_transaksi_keluar['total']; ?></h3>
+      <p>Total Transaksi Barang Keluar</p>
+    </div>
+    <div class="icon">
+      <i class="ion ion-document"></i>
+    </div>
+    <a href="barang_keluar.php" class="small-box-footer">
+      More info <i class="fa fa-arrow-circle-right"></i>
+    </a>
+  </div>
+</div>
+
+</div>
+
+
+<div class="row">
+<section class="col-lg-7">
+
+<div class="box box-info">
+
+<div class="box-header">
+<h3 class="box-title">Detail Login</h3>
+</div>
+
+<div class="box-body">
+
+<table class="table table-bordered">
+
+<tr>
+<th width="30%">Nama</th>
+<td><?php echo $_SESSION['nama']; ?></td>
+</tr>
+
+<tr>
+<th>Username</th>
+<td><?php echo $_SESSION['username']; ?></td>
+</tr>
+
+<tr>
+<th>Level Hak Akses</th>
+<td>
+<span class="label label-success text-uppercase">
+<?php echo $_SESSION['level']; ?>
+</span>
+</td>
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+</div>
+
+</section>
+
+</div>
+
 <?php include 'footer.php'; ?>

@@ -59,6 +59,16 @@
               </div>
 
               <div class="form-group">
+                <label>Register</label>
+                <input type="text" class="form-control" name="register" id="register" placeholder="Masukkan nomor register...">
+              </div>
+
+              <div class="form-group">
+                <label>Tanggal</label>
+                <input type="date" class="form-control" name="tanggal" id="tanggal" required="required">
+              </div>
+
+              <div class="form-group">
                 <label>Barcode</label>
                 <input type="text" class="form-control" name="barcode" id="barcode" placeholder="Masukkan kode barcode...">
               </div>
