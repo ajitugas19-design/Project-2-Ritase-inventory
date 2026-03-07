@@ -27,12 +27,12 @@
 
                   <div class="form-group">
                     <label>Mulai Tanggal</label>
-                    <input autocomplete="off" type="text" value="<?php if(isset($_GET['tanggal_dari'])){echo $_GET['tanggal_dari'];}else{echo "";} ?>" name="tanggal_dari" class="form-control datepicker2" placeholder="Mulai Tanggal" required="required">
+                    <input autocomplete="off" type="date" value="<?php if(isset($_GET['tanggal_dari'])){echo $_GET['tanggal_dari'];}else{echo "";} ?>" name="tanggal_dari" class="form-control datepicker2" placeholder="Mulai Tanggal" required="required">
                   </div>
 
                   <div class="form-group">
                     <label>Sampai Tanggal</label>
-                    <input autocomplete="off" type="text" value="<?php if(isset($_GET['tanggal_sampai'])){echo $_GET['tanggal_sampai'];}else{echo "";} ?>" name="tanggal_sampai" class="form-control datepicker2" placeholder="Sampai Tanggal" required="required">
+                    <input autocomplete="off" type="date" value="<?php if(isset($_GET['tanggal_sampai'])){echo $_GET['tanggal_sampai'];}else{echo "";} ?>" name="tanggal_sampai" class="form-control datepicker2" placeholder="Sampai Tanggal" required="required">
                   </div>
 
                   <div class="form-group">
@@ -93,41 +93,63 @@
               <?php 
               if($jenis == "barang_masuk"){
                 ?>
-                <a href="laporan_pdf.php?tanggal_dari=<?php echo $tgl_dari ?>&tanggal_sampai=<?php echo $tgl_sampai ?>&jenis=<?php echo $jenis ?>" target="_blank" class="btn btn-sm btn-success">
-<i class="fa fa-file-pdf-o"></i> &nbsp CETAK PDF</a>
+              <a href="laporan_pdf.php?tanggal_dari=<?php echo $tgl_dari ?>&tanggal_sampai=<?php echo $tgl_sampai ?>&jenis=<?php echo $jenis ?>" target="_blank" class="btn btn-sm btn-success"><i class="fa fa-file-pdf-o"></i> &nbsp CETAK PDF</a>
 
-<a href="laporan_print.php?tanggal_dari=<?php echo $tgl_dari ?>&tanggal_sampai=<?php echo $tgl_sampai ?>&jenis=<?php echo $jenis ?>" target="_blank" class="btn btn-sm btn-primary">
-<i class="fa fa-print"></i> &nbsp PRINT</a>
+              <a href="laporan_print.php?tanggal_dari=<?php echo $tgl_dari ?>&tanggal_sampai=<?php echo $tgl_sampai ?>&jenis=<?php echo $jenis ?>" target="_blank" class="btn btn-sm btn-primary"><i class="fa fa-print"></i> &nbsp PRINT</a>
 
-                <div class="table-responsive">
+              <a href="laporan_excel.php?tanggal_dari=<?php echo $tgl_dari ?>&tanggal_sampai=<?php echo $tgl_sampai ?>&jenis=<?php echo $jenis ?>" class="btn btn-sm btn-warning"><i class="fa fa-file-excel-o"></i> &nbsp EXPORT EXCEL</a>
+
+              <div class="table-responsive">
                   <table class="table table-bordered table-striped" id="table-datatable">
                     <thead>
                       <tr>
                         <th width="1%">NO</th>
+                        <th>KODE</th>
                         <th>NAMA BARANG</th>
+                        <th>REGISTER</th>
                         <th>TANGGAL MASUK</th>
                         <th>JUMLAH</th>
-                        <th>NAMA SUPLIER</th>
+                        <th>BERAT</th>
+                        <th>LOKASI ASAL</th>
+                        <th>LOKASI TUJUAN</th>
                       </tr>
                     </thead>
                     <tbody>
                       <?php 
                       include '../koneksi.php';
                       $no=1;
-                      $data = mysqli_query($koneksi,"SELECT * FROM barang_masuk WHERE date(bm_tgl_masuk) >= '$tgl_dari' AND date(bm_tgl_masuk) <= '$tgl_sampai'");
+                      $data = mysqli_query($koneksi,"SELECT bm.*, g1.lokasi_asal as nama_gudang, g2.lokasi_tujuan as nama_gudang2 FROM barang_masuk bm LEFT JOIN gudang g1 ON bm.bm_id_gudang = g1.gudang_id LEFT JOIN gudang_2 g2 ON bm.bm_id_gudang2 = g2.gudang2_id WHERE date(bm_tgl_masuk) >= '$tgl_dari' AND date(bm_tgl_masuk) <= '$tgl_sampai'");
                       while($d = mysqli_fetch_array($data)){
                         ?>
                         <tr>
                           <td><?php echo $no++; ?></td>
+                          <td><?php echo $d['bm_id_barang']; ?></td>
                           <td><?php echo $d['bm_nama_barang']; ?></td>
+                          <td><?php echo $d['bm_register']; ?></td>
                           <td><?php echo $d['bm_tgl_masuk']; ?></td>
                           <td><?php echo $d['bm_jumlah']; ?></td>
-                          <td><?php echo $d['bm_nama_suplier']; ?></td>
+                          <td><?php echo $d['bm_berat']; ?></td>
+                          <td><?php echo $d['nama_gudang'] ?? '-'; ?></td>
+                          <td><?php echo $d['nama_gudang2'] ?? '-'; ?></td>
                         </tr>
                         <?php 
                       }
                       ?>
                     </tbody>
+                    <tfoot>
+                      <tr class="bg-info">
+                        <th colspan="5" class="text-right">TOTAL JUMLAH:</th>
+                        <th>
+                          <?php 
+                          include '../koneksi.php';
+                          $total = mysqli_query($koneksi, "SELECT SUM(bm_jumlah) as total_jumlah FROM barang_masuk WHERE date(bm_tgl_masuk) >= '$tgl_dari' AND date(bm_tgl_masuk) <= '$tgl_sampai'");
+                          $t = mysqli_fetch_assoc($total);
+                          echo number_format($t['total_jumlah'], 0, ',', '.');
+                          ?>
+                        </th>
+                        <th colspan="3"></th>
+                      </tr>
+                    </tfoot>
                   </table>
                 </div>
 
@@ -136,40 +158,59 @@
                ?>
                <a href="laporan_pdf.php?tanggal_dari=<?php echo $tgl_dari ?>&tanggal_sampai=<?php echo $tgl_sampai ?>&jenis=<?php echo $jenis ?>" target="_blank" class="btn btn-sm btn-success"><i class="fa fa-file-pdf-o"></i> &nbsp CETAK PDF</a>
                <a href="laporan_print.php?tanggal_dari=<?php echo $tgl_dari ?>&tanggal_sampai=<?php echo $tgl_sampai ?>&jenis=<?php echo $jenis ?>" target="_blank" class="btn btn-sm btn-primary"><i class="fa fa-print"></i> &nbsp PRINT</a>
+               <a href="laporan_excel.php?tanggal_dari=<?php echo $tgl_dari ?>&tanggal_sampai=<?php echo $tgl_sampai ?>&jenis=<?php echo $jenis ?>" class="btn btn-sm btn-warning"><i class="fa fa-file-excel-o"></i> &nbsp EXPORT EXCEL</a>
 
                <div class="table-responsive">
                 <table class="table table-bordered table-striped" id="table-datatable">
                   <thead>
                     <tr>
                       <th width="1%">NO</th>
+                      <th>KODE</th>
                       <th>NAMA BARANG</th>
+                      <th>REGISTER</th>
                       <th>TANGGAL KELUAR</th>
                       <th>JUMLAH</th>
-                      <th>LOKASI</th>
-                      <th>PENERIMA</th>
-                      <th>KETERANGAN</th>
+                      <th>BERAT</th>
+                      <th>LOKASI ASAL</th>
+                      <th>LOKASI TUJUAN</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php 
                     include '../koneksi.php';
                     $no=1;
-                    $data = mysqli_query($koneksi,"SELECT * FROM barang_keluar WHERE date(bk_tgl_keluar) >= '$tgl_dari' AND date(bk_tgl_keluar) <= '$tgl_sampai'");
+                    $data = mysqli_query($koneksi,"SELECT bk.*, g1.lokasi_asal as nama_gudang, g2.lokasi_tujuan as nama_gudang2 FROM barang_keluar bk LEFT JOIN gudang g1 ON bk.bk_id_gudang = g1.gudang_id LEFT JOIN gudang_2 g2 ON bk.bk_id_gudang2 = g2.gudang2_id WHERE date(bk_tgl_keluar) >= '$tgl_dari' AND date(bk_tgl_keluar) <= '$tgl_sampai'");
                     while($d = mysqli_fetch_array($data)){
                       ?>
                       <tr>
                         <td><?php echo $no++; ?></td>
+                        <td><?php echo $d['bk_id_barang']; ?></td>
                         <td><?php echo $d['bk_nama_barang']; ?></td>
+                        <td><?php echo $d['bk_register']; ?></td>
                         <td><?php echo $d['bk_tgl_keluar']; ?></td>
                         <td><?php echo $d['bk_jumlah_keluar']; ?></td>
-                        <td><?php echo $d['bk_lokasi']; ?></td>
-                        <td><?php echo $d['bk_penerima']; ?></td>
-                        <td><?php echo $d['bk_keterangan']; ?></td>
+                        <td><?php echo $d['bk_berat']; ?></td>
+                        <td><?php echo $d['nama_gudang'] ?? '-'; ?></td>
+                        <td><?php echo $d['nama_gudang2'] ?? '-'; ?></td>
                       </tr>
                       <?php 
                     }
                     ?>
                   </tbody>
+                  <tfoot>
+                    <tr class="bg-info">
+                      <th colspan="5" class="text-right">TOTAL JUMLAH:</th>
+                      <th>
+                        <?php 
+                        include '../koneksi.php';
+                        $total = mysqli_query($koneksi, "SELECT SUM(bk_jumlah_keluar) as total_jumlah FROM barang_keluar WHERE date(bk_tgl_keluar) >= '$tgl_dari' AND date(bk_tgl_keluar) <= '$tgl_sampai'");
+                        $t = mysqli_fetch_assoc($total);
+                        echo number_format($t['total_jumlah'], 0, ',', '.');
+                        ?>
+                      </th>
+                      <th colspan="3"></th>
+                    </tr>
+                  </tfoot>
                 </table>
               </div>
 
@@ -182,7 +223,7 @@
             ?>
 
             <div class="alert alert-info text-center">
-              Silahkan Filter Laporan Terlebih Dulu.
+              Silahkan Filter Laporan Terdulu.
             </div>
 
             <?php
@@ -197,3 +238,4 @@
 
 </div>
 <?php include 'footer.php'; ?>
+

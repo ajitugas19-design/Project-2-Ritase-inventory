@@ -63,7 +63,6 @@
                     <th>REGISTER</th>
                     <th>NAMA</th>
                     <th>JUMLAH</th>
-                    <th>KETERANGAN</th>
                     <th>LOKASI</th>
                     <th>BARCODE</th>
                     <th width="10%">OPSI</th>

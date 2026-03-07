@@ -1,6 +1,6 @@
- <!DOCTYPE html>
- <html>
- <head>
+<!DOCTYPE html>
+<html>
+<head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Administrator - Sistem Informasi Inventaris Sarana & Prasarana SMK</title>
@@ -49,30 +49,52 @@
           <thead>
             <tr>
               <th width="1%">NO</th>
+              <th>KODE</th>
               <th>NAMA BARANG</th>
+              <th>REGISTER</th>
               <th>TANGGAL MASUK</th>
               <th>JUMLAH</th>
-              <th>NAMA SUPLIER</th>
+              <th>BERAT</th>
+              <th>LOKASI ASAL</th>
+              <th>LOKASI TUJUAN</th>
             </tr>
           </thead>
           <tbody>
             <?php 
             include '../koneksi.php';
             $no=1;
-            $data = mysqli_query($koneksi,"SELECT * FROM barang_masuk WHERE date(bm_tgl_masuk) >= '$tgl_dari' AND date(bm_tgl_masuk) <= '$tgl_sampai'");
+            $data = mysqli_query($koneksi,"SELECT bm.*, g1.lokasi_asal as nama_gudang, g2.lokasi_tujuan as nama_gudang2 FROM barang_masuk bm LEFT JOIN gudang g1 ON bm.bm_id_gudang = g1.gudang_id LEFT JOIN gudang_2 g2 ON bm.bm_id_gudang2 = g2.gudang2_id WHERE date(bm_tgl_masuk) >= '$tgl_dari' AND date(bm_tgl_masuk) <= '$tgl_sampai'");
             while($d = mysqli_fetch_array($data)){
               ?>
               <tr>
                 <td><?php echo $no++; ?></td>
+                <td><?php echo $d['bm_id_barang']; ?></td>
                 <td><?php echo $d['bm_nama_barang']; ?></td>
+                <td><?php echo $d['bm_register']; ?></td>
                 <td><?php echo $d['bm_tgl_masuk']; ?></td>
                 <td><?php echo $d['bm_jumlah']; ?></td>
-                <td><?php echo $d['bm_nama_suplier']; ?></td>
+                <td><?php echo $d['bm_berat']; ?></td>
+                <td><?php echo $d['nama_gudang'] ?? '-'; ?></td>
+                <td><?php echo $d['nama_gudang2'] ?? '-'; ?></td>
               </tr>
               <?php 
             }
             ?>
           </tbody>
+          <tfoot>
+            <tr class="bg-info">
+              <th colspan="5" class="text-right">TOTAL JUMLAH:</th>
+              <th>
+                <?php 
+                include '../koneksi.php';
+                $total = mysqli_query($koneksi, "SELECT SUM(bm_jumlah) as total FROM barang_masuk WHERE date(bm_tgl_masuk) >= '$tgl_dari' AND date(bm_tgl_masuk) <= '$tgl_sampai'");
+                $t = mysqli_fetch_assoc($total);
+                echo number_format($t['total'], 0, ',', '.');
+                ?>
+              </th>
+              <th colspan="3"></th>
+            </tr>
+          </tfoot>
         </table>
       </div>
 
@@ -84,34 +106,52 @@
         <thead>
           <tr>
             <th width="1%">NO</th>
+            <th>KODE</th>
             <th>NAMA BARANG</th>
+            <th>REGISTER</th>
             <th>TANGGAL KELUAR</th>
             <th>JUMLAH</th>
-            <th>LOKASI</th>
-            <th>PENERIMA</th>
-            <th>KETERANGAN</th>
+            <th>BERAT</th>
+            <th>LOKASI ASAL</th>
+            <th>LOKASI TUJUAN</th>
           </tr>
         </thead>
         <tbody>
           <?php 
           include '../koneksi.php';
           $no=1;
-          $data = mysqli_query($koneksi,"SELECT * FROM barang_keluar WHERE date(bk_tgl_keluar) >= '$tgl_dari' AND date(bk_tgl_keluar) <= '$tgl_sampai'");
+          $data = mysqli_query($koneksi,"SELECT bk.*, g1.lokasi_asal as nama_gudang, g2.lokasi_tujuan as nama_gudang2 FROM barang_keluar bk LEFT JOIN gudang g1 ON bk.bk_id_gudang = g1.gudang_id LEFT JOIN gudang_2 g2 ON bk.bk_id_gudang2 = g2.gudang2_id WHERE date(bk_tgl_keluar) >= '$tgl_dari' AND date(bk_tgl_keluar) <= '$tgl_sampai'");
           while($d = mysqli_fetch_array($data)){
             ?>
             <tr>
               <td><?php echo $no++; ?></td>
+              <td><?php echo $d['bk_id_barang']; ?></td>
               <td><?php echo $d['bk_nama_barang']; ?></td>
+              <td><?php echo $d['bk_register']; ?></td>
               <td><?php echo $d['bk_tgl_keluar']; ?></td>
               <td><?php echo $d['bk_jumlah_keluar']; ?></td>
-              <td><?php echo $d['bk_lokasi']; ?></td>
-              <td><?php echo $d['bk_penerima']; ?></td>
-              <td><?php echo $d['bk_keterangan']; ?></td>
+              <td><?php echo $d['bk_berat']; ?></td>
+              <td><?php echo $d['nama_gudang'] ?? '-'; ?></td>
+              <td><?php echo $d['nama_gudang2'] ?? '-'; ?></td>
             </tr>
             <?php 
           }
           ?>
         </tbody>
+        <tfoot>
+          <tr class="bg-info">
+            <th colspan="5" class="text-right">TOTAL JUMLAH:</th>
+            <th>
+              <?php 
+              include '../koneksi.php';
+              $total = mysqli_query($koneksi, "SELECT SUM(bk_jumlah_keluar) as total FROM barang_keluar WHERE date(bk_tgl_keluar) >= '$tgl_dari' AND date(bk_tgl_keluar) <= '$tgl_sampai'");
+              $t = mysqli_fetch_assoc($total);
+              echo number_format($t['total'], 0, ',', '.');
+              ?>
+            </th>
+            <th colspan="3"></th>
+          </tr>
+        </tfoot>
       </table>
     </div>
 
@@ -124,7 +164,7 @@
   ?>
 
   <div class="alert alert-info text-center">
-    Silahkan Filter Laporan Terlebih Dulu.
+    Silahkan Filter Laporan Terdulu.
   </div>
 
   <?php
@@ -141,3 +181,4 @@
 
 </body>
 </html>
+
