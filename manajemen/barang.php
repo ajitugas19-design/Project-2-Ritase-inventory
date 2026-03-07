@@ -24,20 +24,33 @@
               <a href="barang_tambah.php" class="btn btn-info btn-sm"><i class="fa fa-plus"></i> &nbsp Tambah Barang</a>              
             </div>
           <div class="box-body">
-            
-            <!-- Form Pencarian Barcode (Real-time dengan AJAX) -->
-            <div class="row" style="margin-bottom: 15px;">
-              <div class="col-md-8">
-                <div class="form-inline">
-                  <div class="form-group">
-                    <label><i class="fa fa-barcode"></i> Scan Barcode: </label>
-                    <input type="text" id="cari_barcode" class="form-control" placeholder="Scan atau input kode barcode..." autofocus>
-                    <button type="button" class="btn btn-primary" onclick="cariBarcode()"><i class="fa fa-search"></i> Cari</button>
-                    <button type="button" class="btn btn-success" onclick="bukaScanner()"><i class="fa fa-camera"></i> Kamera</button>
-                    <a href="barang.php" class="btn btn-default"><i class="fa fa-refresh"></i> Reset</a>
-                  </div>
-                <div id="hasil_pencarian" style="margin-top: 10px;"></div>
-            </div>
+
+<div class="row" style="margin-bottom:15px;">
+  <div class="col-md-12">
+
+    <div class="form-inline">
+      <label><i class="fa fa-barcode"></i> Scan Barcode :</label>
+
+      <input type="text" id="cari_barcode" class="form-control" 
+      placeholder="Scan atau input kode barcode..." autofocus>
+
+      <button type="button" class="btn btn-primary" onclick="cariBarcode()">
+        <i class="fa fa-search"></i> Cari
+      </button>
+
+      <button type="button" class="btn btn-success" onclick="bukaScanner()">
+        <i class="fa fa-camera"></i> Kamera
+      </button>
+
+      <a href="barang.php" class="btn btn-default">
+        <i class="fa fa-refresh"></i> Reset
+      </a>
+    </div>
+
+    <div id="hasil_pencarian" style="margin-top:10px;"></div>
+
+  </div>
+</div>
 
 
             <div class="table-responsive">

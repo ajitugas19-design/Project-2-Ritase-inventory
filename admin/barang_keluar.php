@@ -79,6 +79,20 @@
                   }
                   ?>
                 </tbody>
+                <tfoot>
+                  <tr class="bg-info">
+                    <th colspan="5" class="text-right">TOTAL JUMLAH:</th>
+                    <th>
+                      <?php 
+                      include '../koneksi.php';
+                      $total = mysqli_query($koneksi, "SELECT SUM(bk_jumlah_keluar) as total_jumlah FROM barang_keluar");
+                      $t = mysqli_fetch_assoc($total);
+                      echo number_format($t['total_jumlah'], 0, ',', '.');
+                      ?>
+                    </th>
+                    <th colspan="4"></th>
+                  </tr>
+                </tfoot>
               </table>
             </div>
           </div>
