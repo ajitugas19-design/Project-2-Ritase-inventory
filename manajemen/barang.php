@@ -23,7 +23,6 @@
             <div class="btn-group pull-right">
               <a href="barang_tambah.php" class="btn btn-info btn-sm"><i class="fa fa-plus"></i> &nbsp Tambah Barang</a>              
             </div>
-          </div>
           <div class="box-body">
             
             <!-- Form Pencarian Barcode (Real-time dengan AJAX) -->
@@ -37,9 +36,7 @@
                     <button type="button" class="btn btn-success" onclick="bukaScanner()"><i class="fa fa-camera"></i> Kamera</button>
                     <a href="barang.php" class="btn btn-default"><i class="fa fa-refresh"></i> Reset</a>
                   </div>
-                </div>
                 <div id="hasil_pencarian" style="margin-top: 10px;"></div>
-              </div>
             </div>
 
 
@@ -53,6 +50,7 @@
                     <th>REGISTER</th>
                     <th>NAMA</th>
                     <th>JUMLAH</th>
+                    <th>KETERANGAN</th>
                     <th>LOKASI</th>
                     <th>BARCODE</th>
                     <th width="10%">OPSI</th>
@@ -72,6 +70,34 @@
                   $no=1;
                   $data = mysqli_query($koneksi,"SELECT * FROM barang $where");
                   while($d = mysqli_fetch_array($data)){
+                    // Hitung total masuk dan keluar untuk barang ini
+                    $barang_id = $d['barang_id'];
+                    
+                    $masuk = mysqli_query($koneksi, "SELECT SUM(bm_jumlah) as total_masuk FROM barang_masuk WHERE bm_id_barang = '$barang_id'");
+                    $masuk_data = mysqli_fetch_assoc($masuk);
+                    $total_masuk = $masuk_data['total_masuk'] ? $masuk_data['total_masuk'] : 0;
+                    
+                    $keluar = mysqli_query($koneksi, "SELECT SUM(bk_jumlah_keluar) as total_keluar FROM barang_keluar WHERE bk_id_barang = '$barang_id'");
+                    $keluar_data = mysqli_fetch_assoc($keluar);
+                    $total_keluar = $keluar_data['total_keluar'] ? $keluar_data['total_keluar'] : 0;
+                    
+                    // Jumlah tampilan = barang_jumlah + total_masuk - total_keluar
+                    $jumlah_tampilan = $d['barang_jumlah'] + $total_masuk - $total_keluar;
+                    
+                    // Tentukan keterangan berdasarkan status dengan jumlah
+                    $keterangan = "";
+                    $keterangan_class = "";
+                    
+                    if ($total_masuk > 0 && $total_keluar > 0) {
+                        $keterangan = "🟢 Data Dimasukkan: +" . $total_masuk . " | 🔴 Barang Diambil: -" . $total_keluar;
+                        $keterangan_class = "text-orange";
+                    } elseif ($total_masuk > 0) {
+                        $keterangan = "🟢 Data Dimasukkan: +" . $total_masuk;
+                        $keterangan_class = "text-green";
+                    } elseif ($total_keluar > 0) {
+                        $keterangan = "🔴 Barang Diambil: -" . $total_keluar;
+                        $keterangan_class = "text-red";
+                    }
                     ?>
                     <tr>
                       <td><?php echo $no++; ?></td>
@@ -79,7 +105,19 @@
                       <td><?php echo isset($d['barang_tanggal']) ? $d['barang_tanggal'] : '-'; ?></td>
                       <td><?php echo $d['barang_register']; ?></td>
                       <td><?php echo $d['barang_nama']; ?></td>
-                      <td><?php echo $d['barang_jumlah']; ?></td>
+                      <td>
+                          <strong><?php echo $jumlah_tampilan; ?></strong>
+                          <?php if($total_masuk > 0 || $total_keluar > 0): ?>
+                          <br><small class="text-muted">(Dasar: <?php echo $d['barang_jumlah']; ?> | Masuk: +<?php echo $total_masuk; ?> | Keluar: -<?php echo $total_keluar; ?>)</small>
+                          <?php endif; ?>
+                      </td>
+                      <td class="<?php echo $keterangan_class; ?>">
+                          <?php if($keterangan): ?>
+                          <i class="fa fa-info-circle"></i> <?php echo $keterangan; ?>
+                          <?php else: ?>
+                          -
+                          <?php endif; ?>
+                      </td>
                       <td><?php echo $d['barang_lokasi']; ?></td>
                       <td>
                         <?php if(!empty($d['barcode'])): ?>
@@ -105,17 +143,29 @@
                     <th id="total_jumlah">
                       <?php 
                       include '../koneksi.php';
-                      $jumlah = mysqli_query($koneksi, "SELECT SUM(barang_jumlah) as total FROM barang");
-                      $j = mysqli_fetch_assoc($jumlah);
-                      echo number_format($j['total'], 0, ',', '.');
+                      // Hitung total dengan mempertimbangkan barang masuk dan keluar
+                      $barang = mysqli_query($koneksi, "SELECT barang_id, barang_jumlah FROM barang");
+                      $total_keseluruhan = 0;
+                      while($b = mysqli_fetch_assoc($barang)) {
+                          $bid = $b['barang_id'];
+                          $m = mysqli_query($koneksi, "SELECT SUM(bm_jumlah) as tm FROM barang_masuk WHERE bm_id_barang = '$bid'");
+                          $md = mysqli_fetch_assoc($m);
+                          $tm = $md['tm'] ? $md['tm'] : 0;
+                          
+                          $k = mysqli_query($koneksi, "SELECT SUM(bk_jumlah_keluar) as tk FROM barang_keluar WHERE bk_id_barang = '$bid'");
+                          $kd = mysqli_fetch_assoc($k);
+                          $tk = $kd['tk'] ? $kd['tk'] : 0;
+                          
+                          $total_keseluruhan += $b['barang_jumlah'] + $tm - $tk;
+                      }
+                      echo number_format($total_keseluruhan, 0, ',', '.');
                       ?>
                     </th>
-                    <th colspan="3"></th>
+                    <th colspan="4"></th>
                   </tr>
                 </tfoot>
               </table>
             </div>
-          </div>
 
         </div>
       </section>
@@ -143,13 +193,31 @@ function cariBarcode() {
                 
                 if(data.found) {
                     var barcodeImg = data.barcode ? data.barcode : data.barang_id;
+                    
+                    // Determine keterangan with quantity
+                    var keterangan = '-';
+                    var keteranganClass = '';
+                    if(data.total_masuk > 0 && data.total_keluar > 0) {
+                        keterangan = '🟢 Data Dimasukkan: +' + data.total_masuk + ' | 🔴 Barang Diambil: -' + data.total_keluar;
+                        keteranganClass = 'text-orange';
+                    } else if(data.total_masuk > 0) {
+                        keterangan = '🟢 Data Dimasukkan: +' + data.total_masuk;
+                        keteranganClass = 'text-green';
+                    } else if(data.total_keluar > 0) {
+                        keterangan = '🔴 Barang Diambil: -' + data.total_keluar;
+                        keteranganClass = 'text-red';
+                    }
+                    
                     var html = '<tr>' +
                         '<td>1</td>' +
                         '<td>' + data.barang_id + '</td>' +
-                        '<td>-</td>' +
-                        '<td>-</td>' +
+                        '<td>' + (data.barang_tanggal ? data.barang_tanggal : '-') + '</td>' +
+                        '<td>' + (data.barang_register ? data.barang_register : '-') + '</td>' +
                         '<td>' + data.barang_nama + '</td>' +
-                        '<td>' + data.barang_jumlah + '</td>' +
+                        '<td><strong>' + data.barang_jumlah_tampilan + '</strong>' + 
+                        (data.total_masuk > 0 || data.total_keluar > 0 ? '<br><small class="text-muted">(Dasar: ' + data.barang_jumlah + ' | Masuk: +' + data.total_masuk + ' | Keluar: -' + data.total_keluar + ')</small>' : '') + 
+                        '</td>' +
+                        '<td class="' + keteranganClass + '">' + (keterangan !== '-' ? '<i class="fa fa-info-circle"></i> ' + keterangan : '-') + '</td>' +
                         '<td>' + data.barang_lokasi + '</td>' +
                         '<td><img src="../admin/barcode_img.php?text=' + barcodeImg + '" height="60"><br><small>' + barcodeImg + '</small></td>' +
                         '<td>' +
@@ -158,12 +226,12 @@ function cariBarcode() {
                         '</td></tr>';
                     
                     tabelBody.innerHTML = html;
-                    totalJumlah.innerHTML = data.barang_jumlah;
+                    totalJumlah.innerHTML = data.barang_jumlah_tampilan;
                     
                     document.getElementById('hasil_pencarian').innerHTML = 
                         '<div class="alert alert-success"><i class="fa fa-check"></i> Ditemukan: ' + data.barang_nama + ' (Barcode: ' + barcodeImg + ')</div>';
                 } else {
-                    tabelBody.innerHTML = '<tr><td colspan="9" class="text-center alert alert-warning">Barang tidak ditemukan. <a href="barang_tambah.php">Tambah barang baru?</a></td></tr>';
+                    tabelBody.innerHTML = '<tr><td colspan="10" class="text-center alert alert-warning">Barang tidak ditemukan. <a href="barang_tambah.php">Tambah barang baru?</a></td></tr>';
                     totalJumlah.innerHTML = '0';
                     
                     document.getElementById('hasil_pencarian').innerHTML = 

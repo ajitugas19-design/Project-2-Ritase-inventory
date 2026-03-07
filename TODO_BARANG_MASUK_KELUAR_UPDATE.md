@@ -1,0 +1,16 @@
+# TODO: Implement Direct Quantity Update for Barang Masuk/Keluar
+
+## Plan:
+
+1. [x] Read and understand current implementation
+2. [x] Edit admin/barang_masuk_act.php - Add quantity increase to barang table
+3. [x] Edit admin/barang_keluar_act.php - Add quantity decrease with validation
+4. [x] Edit manajemen/barang_masuk_act.php - Add quantity increase to barang table
+5. [x] Edit manajemen/barang_keluar_act.php - Add quantity decrease with validation
+
+## Implementation Details:
+
+- **Barang Masuk**: Increase `barang_jumlah` by the input quantity
+- **Barang Keluar**: Decrease `barang_jumlah` by the input quantity (with validation to ensure sufficient stock)
+
+## Status: COMPLETED

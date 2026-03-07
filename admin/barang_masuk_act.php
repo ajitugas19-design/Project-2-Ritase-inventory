@@ -34,16 +34,18 @@ if (empty($id_gudang2)) {
     }
 }
 
+// Get current barang data
 $b = mysqli_query($koneksi,"select * from barang where barang_id='$barang'");
 $bb = mysqli_fetch_assoc($b);
 $nama_barang = $bb['barang_nama'];
+$jumlah_barang = $bb['barang_jumlah'];
 
-// tambah jumlah data barang
-$jumlah_lama = $bb['barang_jumlah'];
-$jumlah_baru = $jumlah_lama+$jumlah;
-mysqli_query($koneksi,"update barang set barang_jumlah='$jumlah_baru' where barang_id='$barang'");
+// Langsung tambahkan jumlah barang di tabel barang (barang masuk)
+$jumlah_baru = $jumlah_barang + $jumlah;
+mysqli_query($koneksi, "UPDATE barang SET barang_jumlah='$jumlah_baru' WHERE barang_id='$barang'");
 
-mysqli_query($koneksi, "INSERT INTO barang_masuk 
+// Insert to barang_masuk table
+mysqli_query($koneksi, "INSERT INTO barang_masuk
 (bm_id_barang, bm_register, bm_nama_barang, bm_tgl_masuk, bm_jumlah, bm_berat, bm_id_gudang, bm_id_gudang2)
 VALUES 
 ('$barang','$register','$nama_barang','$tanggal','$jumlah','$berat',$id_gudang,$id_gudang2)");

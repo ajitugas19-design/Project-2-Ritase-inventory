@@ -31,17 +31,38 @@ if (empty($id_gudang2)) {
     }
 }
 
-// Get barang info
+// Cek apakah barang ada di tabel barang
 $b = mysqli_query($koneksi,"select * from barang where barang_id='$barang'");
 $bb = mysqli_fetch_assoc($b);
+
+// Validasi: Barang harus ada di tabel barang
+if (!$bb) {
+    echo "<script>
+    alert('Barang tidak ditemukan! Barang harus ada di Data Barang terlebih dahulu.');
+    window.location.href='barang_keluar.php';
+    </script>";
+    exit;
+}
+
 $nama_barang = $bb['barang_nama'];
+$jumlah_barang = $bb['barang_jumlah'];
 
-// kurang jumlah data barang
-$jumlah_lama = $bb['barang_jumlah'];
-$jumlah_baru = $jumlah_lama - $jumlah;
-mysqli_query($koneksi,"update barang set barang_jumlah='$jumlah_baru' where barang_id='$barang'");
+// Validasi: Pastikan stok cukup untuk barang keluar
+$stok_tersedia = $jumlah_barang;
+if ($jumlah > $stok_tersedia) {
+    echo "<script>
+    alert('Stok tidak mencukupi! Stok tersedia: $stok_tersedia, Jumlah diminta: $jumlah');
+    window.location.href='barang_keluar.php';
+    </script>";
+    exit;
+}
 
-mysqli_query($koneksi, "INSERT INTO barang_keluar 
+// Langsung kurangi jumlah barang di tabel barang (barang keluar)
+$jumlah_baru = $jumlah_barang - $jumlah;
+mysqli_query($koneksi, "UPDATE barang SET barang_jumlah='$jumlah_baru' WHERE barang_id='$barang'");
+
+// Insert to barang_keluar table
+mysqli_query($koneksi, "INSERT INTO barang_keluar
 (bk_id_barang, bk_register, bk_nama_barang, bk_tgl_keluar, bk_jumlah_keluar, bk_berat, bk_id_gudang, bk_id_gudang2)
 VALUES 
 ('$barang','$register','$nama_barang','$tanggal','$jumlah','$berat',$id_gudang,$id_gudang2)");
