@@ -40,12 +40,22 @@
                 </div>
                 <div class="form-group">
                   <label>Lokasi</label>
-                  <input type="text" class="form-control" name="lokasi" required="required" placeholder="Masukkan lokasi .." value="<?php echo $d['barang_lokasi'] ?>">
+                  <select name="lokasi" class="form-control" required="required">
+                    <option value="">- Pilih Lokasi -</option>
+                    <?php 
+                    include '../koneksi.php';
+                    $gudang = mysqli_query($koneksi, "SELECT * FROM gudang ORDER BY lokasi_asal ASC");
+                    while($g = mysqli_fetch_assoc($gudang)){
+                      $selected = ($g['gudang_id'] == $d['barang_lokasi']) ? 'selected' : '';
+                      echo '<option value="'.$g['gudang_id'].'" '.$selected.'>'.$g['lokasi_asal'].'</option>';
+                    }
+                    ?>
+                  </select>
                 </div>
 
                 <div class="form-group">
                   <label>Jumlah</label>
-                  <input type="number" class="form-control" name="jumlah" required="required" placeholder="Masukkan jumlah .." value="<?php echo $d['barang_jumlah'] ?>">
+                  <input type="number" class="form-control" name="jumlah" required="required" placeholder="Masukkan jumlah .." value="<?php echo isset($d['barang_jumlah']) ? $d['barang_jumlah'] : '0' ?>">
                 </div>
 
                 <div class="form-group">

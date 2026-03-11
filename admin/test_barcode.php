@@ -34,6 +34,12 @@ if ($result && mysqli_num_rows($result) > 0) {
     $lokasi = '-';
     $jumlah = 1;
     
+    // Cek dan tambahkan kolom barang_jumlah jika belum ada
+    $cek_kolom = mysqli_query($koneksi, "SHOW COLUMNS FROM barang LIKE 'barang_jumlah'");
+    if (mysqli_num_rows($cek_kolom) == 0) {
+        mysqli_query($koneksi, "ALTER TABLE barang ADD COLUMN barang_jumlah INT DEFAULT 0");
+    }
+    
     $insert = "INSERT INTO barang (barang_nama, barang_register, barang_lokasi, barang_jumlah, barcode) 
                VALUES ('$nama', '$register', '$lokasi', $jumlah, '$barcode_escape')";
     

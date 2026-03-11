@@ -45,10 +45,29 @@ if (!$bb) {
 }
 
 $nama_barang = $bb['barang_nama'];
-$jumlah_barang = $bb['barang_jumlah'];
+
+// Cek apakah kolom barang_jumlah ada
+$cek_kolom = mysqli_query($koneksi, "SHOW COLUMNS FROM barang LIKE 'barang_jumlah'");
+$kolom_adalah = mysqli_num_rows($cek_kolom) > 0;
+
+// Ambil jumlah barang jika kolom ada
+$jumlah_barang = 0;
+if ($kolom_adalah) {
+    $jumlah_barang = isset($bb['barang_jumlah']) ? $bb['barang_jumlah'] : 0;
+}
+
+// Hitung stok real (barang_jumlah + total_masuk - total_keluar) untuk validasi
+$masuk = mysqli_query($koneksi, "SELECT SUM(bm_jumlah) as total_masuk FROM barang_masuk WHERE bm_id_barang = '$barang'");
+$masuk_data = mysqli_fetch_assoc($masuk);
+$total_masuk = $masuk_data['total_masuk'] ? $masuk_data['total_masuk'] : 0;
+
+$keluar = mysqli_query($koneksi, "SELECT SUM(bk_jumlah_keluar) as total_keluar FROM barang_keluar WHERE bk_id_barang = '$barang'");
+$keluar_data = mysqli_fetch_assoc($keluar);
+$total_keluar = $keluar_data['total_keluar'] ? $keluar_data['total_keluar'] : 0;
+
+$stok_tersedia = $jumlah_barang + $total_masuk - $total_keluar;
 
 // Validasi: Pastikan stok cukup untuk barang keluar
-$stok_tersedia = $jumlah_barang;
 if ($jumlah > $stok_tersedia) {
     echo "<script>
     alert('Stok tidak mencukupi! Stok tersedia: $stok_tersedia, Jumlah diminta: $jumlah');
@@ -57,9 +76,11 @@ if ($jumlah > $stok_tersedia) {
     exit;
 }
 
-// Langsung kurangi jumlah barang di tabel barang (barang keluar)
-$jumlah_baru = $jumlah_barang - $jumlah;
-mysqli_query($koneksi, "UPDATE barang SET barang_jumlah='$jumlah_baru' WHERE barang_id='$barang'");
+// Kurangi jumlah barang di tabel barang jika kolom ada
+if ($kolom_adalah) {
+    $jumlah_baru = $jumlah_barang - $jumlah;
+    mysqli_query($koneksi, "UPDATE barang SET barang_jumlah='$jumlah_baru' WHERE barang_id='$barang'");
+}
 
 // Insert to barang_keluar table
 mysqli_query($koneksi, "INSERT INTO barang_keluar

@@ -9,6 +9,12 @@ $berat = $_POST['berat'];
 $id_gudang = $_POST['id_gudang'];
 $id_gudang2 = $_POST['id_gudang2'];
 
+// Cek dan tambahkan kolom barang_jumlah jika belum ada
+$cek_kolom = mysqli_query($koneksi, "SHOW COLUMNS FROM barang LIKE 'barang_jumlah'");
+if (mysqli_num_rows($cek_kolom) == 0) {
+    mysqli_query($koneksi, "ALTER TABLE barang ADD COLUMN barang_jumlah INT DEFAULT 0");
+}
+
 // kembalikan data barang
 $bm = mysqli_query($koneksi,"select * from barang_masuk where bm_id='$id'");
 $barang_masuk = mysqli_fetch_assoc($bm);
@@ -17,7 +23,7 @@ $jumlah_barang_masuk = $barang_masuk['bm_jumlah'];
 
 $b = mysqli_query($koneksi,"select * from barang where barang_id='$id_barang_masuk'");
 $barang = mysqli_fetch_assoc($b);
-$jumlah_barang = $barang['barang_jumlah'];
+$jumlah_barang = isset($barang['barang_jumlah']) ? $barang['barang_jumlah'] : 0;
 
 // ubah jumlah stok data barang
 $ubah_jumlah = $jumlah_barang - $jumlah_barang_masuk;
@@ -39,3 +45,4 @@ mysqli_query($koneksi,"update barang_masuk set
   where bm_id='$id'");
 
 header("location:barang_masuk.php");
+

@@ -38,11 +38,17 @@ if (empty($id_gudang2)) {
 $b = mysqli_query($koneksi,"select * from barang where barang_id='$barang'");
 $bb = mysqli_fetch_assoc($b);
 $nama_barang = $bb['barang_nama'];
-$jumlah_barang = $bb['barang_jumlah'];
 
-// Langsung tambahkan jumlah barang di tabel barang (barang masuk)
-$jumlah_baru = $jumlah_barang + $jumlah;
-mysqli_query($koneksi, "UPDATE barang SET barang_jumlah='$jumlah_baru' WHERE barang_id='$barang'");
+// Cek apakah kolom barang_jumlah ada
+$cek_kolom = mysqli_query($koneksi, "SHOW COLUMNS FROM barang LIKE 'barang_jumlah'");
+$kolom_adalah = mysqli_num_rows($cek_kolom) > 0;
+
+// Update jumlah barang di tabel barang jika kolom ada
+if ($kolom_adalah) {
+    $jumlah_barang = isset($bb['barang_jumlah']) ? $bb['barang_jumlah'] : 0;
+    $jumlah_baru = $jumlah_barang + $jumlah;
+    mysqli_query($koneksi, "UPDATE barang SET barang_jumlah='$jumlah_baru' WHERE barang_id='$barang'");
+}
 
 // Insert to barang_masuk table
 mysqli_query($koneksi, "INSERT INTO barang_masuk

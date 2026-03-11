@@ -63,9 +63,9 @@ $(document).ready(function(){
       searching   : true,
       ordering    : true,
       info        : true,
-      autoWidth   : true,
+      autoWidth   : false,
       scrollX     : false,
-      responsive  : true,
+      responsive  : false,
       pageLength  : 10,
       order       : [[ 3, "desc" ]],
       language: {

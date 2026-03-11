@@ -24,7 +24,6 @@
           </div>
           <div class="box-body">
             <form action="barang_act.php" method="post" id="formBarang">
-<!-- Scan Barcode Field -->
               <div class="form-group">
                 <label><i class="fa fa-barcode"></i> Scan Barcode (Opsional)</label>
                 <div class="input-group">
@@ -50,7 +49,16 @@
 
               <div class="form-group">
                 <label>Lokasi</label>
-                <input type="text" class="form-control" name="lokasi" id="lokasi" required="required" placeholder="Masukkan lokasi ..">
+                <select name="lokasi" id="lokasi" class="form-control" required="required">
+                  <option value="">- Pilih Lokasi -</option>
+                  <?php 
+                  include '../koneksi.php';
+                  $gudang = mysqli_query($koneksi, "SELECT * FROM gudang ORDER BY lokasi_asal ASC");
+                  while($g = mysqli_fetch_assoc($gudang)){
+                    echo '<option value="'.$g['gudang_id'].'">'.$g['lokasi_asal'].'</option>';
+                  }
+                  ?>
+                </select>
               </div>
 
               <div class="form-group">
@@ -94,7 +102,6 @@ function cariBarcode() {
         return;
     }
     
-    // Cari data barang berdasarkan barcode
     fetch('../koneksi.php?aksi=cari_barcode&kode=' + kode)
     .then(response => response.json())
     .then(data => {
@@ -103,7 +110,6 @@ function cariBarcode() {
             document.getElementById('nama').value = data.barang_nama;
             document.getElementById('lokasi').value = data.barang_lokasi;
             document.getElementById('jumlah').value = data.barang_jumlah;
-            // Use barcode field from database
             document.getElementById('barcode').value = data.barcode || '';
             alert("Data barang ditemukan!");
         } else {
@@ -113,28 +119,22 @@ function cariBarcode() {
     })
     .catch(error => {
         console.error('Error:', error);
-        // Fallback: langsung set barcode
         document.getElementById('barcode').value = kode;
     });
 }
 
-// Function to open barcode scanner camera
 function bukaScanner() {
-    // Open scanner in new window
     window.open('barcode_scanner.php', 'ScannerBarcode', 'width=500,height=600,scrollbars=yes');
 }
 
-// Listen for messages from barcode scanner window
 window.addEventListener('message', function(event) {
     if(event.data && event.data.type === 'barcodeScan') {
         var barcode = event.data.barcode;
         document.getElementById('scanBarcode').value = barcode;
-        // Automatically search after scan
         cariBarcode();
     }
 });
 
-// Handle Enter key pada scan barcode
 document.getElementById('scanBarcode').addEventListener('keypress', function(e) {
     if(e.key === 'Enter') {
         e.preventDefault();
@@ -144,3 +144,4 @@ document.getElementById('scanBarcode').addEventListener('keypress', function(e) 
 </script>
 
 <?php include 'footer.php'; ?>
+

@@ -1,5 +1,44 @@
 <?php include 'header.php'; ?>
 
+<style>
+/* Table Layout Fix - Scroll vertical only */
+.table-responsive {
+    max-height: 400px;
+    overflow-y: auto;
+}
+#table-datatable th, 
+#table-datatable td {
+    vertical-align: middle;
+    text-align: center;
+    font-size: 13px;
+}
+#table-datatable th {
+    font-weight: 700;
+}
+#table-datatable td strong {
+    font-weight: 800;
+}
+/* Column Sizes */
+#table-datatable th:nth-child(1),
+#table-datatable td:nth-child(1) { width: 40px; min-width: 40px; }
+#table-datatable th:nth-child(2),
+#table-datatable td:nth-child(2) { width: 80px; min-width: 80px; }
+#table-datatable th:nth-child(3),
+#table-datatable td:nth-child(3) { width: 100px; min-width: 100px; }
+#table-datatable th:nth-child(4),
+#table-datatable td:nth-child(4) { width: 100px; min-width: 100px; }
+#table-datatable th:nth-child(5),
+#table-datatable td:nth-child(5) { width: auto; min-width: 150px; }
+#table-datatable th:nth-child(6),
+#table-datatable td:nth-child(6) { width: 80px; min-width: 80px; }
+#table-datatable th:nth-child(7),
+#table-datatable td:nth-child(7) { width: 100px; min-width: 100px; }
+#table-datatable th:nth-child(8),
+#table-datatable td:nth-child(8) { width: 120px; min-width: 120px; }
+#table-datatable th:nth-child(9),
+#table-datatable td:nth-child(9) { width: 70px; min-width: 70px; }
+</style>
+
 <div class="content-wrapper">
 
   <section class="content-header">
@@ -47,9 +86,9 @@
       </a>
     </div>
 
-    <div id="hasil_pencarian" style="margin-top:10px;"></div>
+<div id="hasil_pencarian" style="margin-top:10px;"></div>
 
-  </div>
+</div>
 </div>
 
 
@@ -80,7 +119,7 @@
                   }
                   
                   $no=1;
-                  $data = mysqli_query($koneksi,"SELECT * FROM barang $where");
+                  $data = mysqli_query($koneksi,"SELECT b.*, g.lokasi_asal as nama_lokasi FROM barang b LEFT JOIN gudang g ON b.barang_lokasi = g.gudang_id $where");
                   while($d = mysqli_fetch_array($data)){
                     // Hitung total masuk dan keluar untuk barang ini
                     $barang_id = $d['barang_id'];
@@ -93,8 +132,9 @@
                     $keluar_data = mysqli_fetch_assoc($keluar);
                     $total_keluar = $keluar_data['total_keluar'] ? $keluar_data['total_keluar'] : 0;
                     
-                    // Jumlah tampilan = barang_jumlah + total_masuk - total_keluar
-                    $jumlah_tampilan = $d['barang_jumlah'] + $total_masuk - $total_keluar;
+                    // Jumlah tampilan = total_masuk - total_keluar
+                    // Database tidak punya kolom barang_jumlah
+                    $jumlah_tampilan = $total_masuk - $total_keluar;
                     
                     // Tentukan keterangan berdasarkan status dengan jumlah
                     $keterangan = "";
@@ -117,20 +157,8 @@
                       <td><?php echo isset($d['barang_tanggal']) ? $d['barang_tanggal'] : '-'; ?></td>
                       <td><?php echo $d['barang_register']; ?></td>
                       <td><?php echo $d['barang_nama']; ?></td>
-                      <td>
-                          <strong><?php echo $jumlah_tampilan; ?></strong>
-                          <?php if($total_masuk > 0 || $total_keluar > 0): ?>
-                          <br><small class="text-muted">(Dasar: <?php echo $d['barang_jumlah']; ?> | Masuk: +<?php echo $total_masuk; ?> | Keluar: -<?php echo $total_keluar; ?>)</small>
-                          <?php endif; ?>
-                      </td>
-                      <td class="<?php echo $keterangan_class; ?>">
-                          <?php if($keterangan): ?>
-                          <i class="fa fa-info-circle"></i> <?php echo $keterangan; ?>
-                          <?php else: ?>
-                          -
-                          <?php endif; ?>
-                      </td>
-                      <td><?php echo $d['barang_lokasi']; ?></td>
+                      <td><strong><?php echo $jumlah_tampilan; ?></strong></td>
+                      <td><?php echo isset($d['nama_lokasi']) ? $d['nama_lokasi'] : '-'; ?></td>
                       <td>
                         <?php if(!empty($d['barcode'])): ?>
                         <img src="../admin/barcode_img.php?text=<?php echo $d['barcode']; ?>" height="60">
@@ -155,11 +183,12 @@
                     <th id="total_jumlah">
                       <?php 
                       include '../koneksi.php';
-                      // Hitung total dengan mempertimbangkan barang masuk dan keluar
-                      $barang = mysqli_query($koneksi, "SELECT barang_id, barang_jumlah FROM barang");
+                      // Hitung total dari barang_masuk dan barang_keluar
+                      $barang = mysqli_query($koneksi, "SELECT barang_id FROM barang");
                       $total_keseluruhan = 0;
                       while($b = mysqli_fetch_assoc($barang)) {
                           $bid = $b['barang_id'];
+                          
                           $m = mysqli_query($koneksi, "SELECT SUM(bm_jumlah) as tm FROM barang_masuk WHERE bm_id_barang = '$bid'");
                           $md = mysqli_fetch_assoc($m);
                           $tm = $md['tm'] ? $md['tm'] : 0;
@@ -168,14 +197,13 @@
                           $kd = mysqli_fetch_assoc($k);
                           $tk = $kd['tk'] ? $kd['tk'] : 0;
                           
-                          $total_keseluruhan += $b['barang_jumlah'] + $tm - $tk;
+                          $total_keseluruhan += $tm - $tk;
                       }
                       echo number_format($total_keseluruhan, 0, ',', '.');
                       ?>
                     </th>
                     <th colspan="4"></th>
                   </tr>
-                </tfoot>
               </table>
             </div>
 
@@ -187,6 +215,11 @@
 </div>
 
 <script>
+function changePageLength(length){
+    var table = $('#table-datatable').DataTable();
+    table.page.len(parseInt(length)).draw();
+}
+
 function cariBarcode() {
     var kode = document.getElementById('cari_barcode').value;
     if(kode == "") {

@@ -50,13 +50,24 @@
 
               <div class="form-group">
                 <label>Lokasi</label>
-                <input type="text" class="form-control" name="lokasi" id="lokasi" required="required" placeholder="Masukkan lokasi ..">
+                <select name="lokasi" id="lokasi" class="form-control" required="required">
+                  <option value="">- Pilih Lokasi -</option>
+                  <?php 
+                  include '../koneksi.php';
+                  $gudang = mysqli_query($koneksi, "SELECT * FROM gudang ORDER BY lokasi_asal ASC");
+                  while($g = mysqli_fetch_assoc($gudang)){
+                    echo '<option value="'.$g['gudang_id'].'">'.$g['lokasi_asal'].'</option>';
+                  }
+                  ?>
+                </select>
               </div>
 
               <div class="form-group">
-                <label>Jumlah</label>
-                <input type="number" class="form-control" name="jumlah" id="jumlah" required="required" placeholder="Masukkan jumlah .." value="1" min="1">
-              </div>
+  <label>Jumlah</label>
+  <input type="number" class="form-control" name="jumlah" id="jumlah"
+  required="required" placeholder="Masukkan jumlah .."
+  value="0" min="0">
+</div>
 
               <div class="form-group">
                 <label>Register</label>
@@ -65,7 +76,7 @@
 
               <div class="form-group">
                 <label>Tanggal</label>
-                <input type="date" class="form-control" name="tanggal" id="tanggal" required="required">
+<input type="date" class="form-control" name="tanggal" id="tanggal">
               </div>
 
               <div class="form-group">

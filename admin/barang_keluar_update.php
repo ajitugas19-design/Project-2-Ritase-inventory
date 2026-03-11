@@ -9,11 +9,16 @@ $berat = $_POST['berat'];
 $id_gudang = $_POST['id_gudang'];
 $id_gudang2 = $_POST['id_gudang2'];
 
+// Cek dan tambahkan kolom barang_jumlah jika belum ada
+$cek_kolom = mysqli_query($koneksi, "SHOW COLUMNS FROM barang LIKE 'barang_jumlah'");
+if (mysqli_num_rows($cek_kolom) == 0) {
+    mysqli_query($koneksi, "ALTER TABLE barang ADD COLUMN barang_jumlah INT DEFAULT 0");
+}
 
 $b = mysqli_query($koneksi,"select * from barang where barang_id='$barang'");
 $bb = mysqli_fetch_assoc($b);
 $nama_barang = $bb['barang_nama'];
-$jumlah_barang = $bb['barang_jumlah'];
+$jumlah_barang = isset($bb['barang_jumlah']) ? $bb['barang_jumlah'] : 0;
 
 $bk = mysqli_query($koneksi,"select * from barang_keluar where bk_id='$id'");
 $barang_keluar = mysqli_fetch_assoc($bk);
@@ -23,7 +28,7 @@ $jumlah_barang_keluar = $barang_keluar['bk_jumlah_keluar'];
 
 $x = mysqli_query($koneksi,"select * from barang where barang_id='$id_barang'");
 $xx = mysqli_fetch_assoc($x);
-$jumlah_x = $xx['barang_jumlah'];
+$jumlah_x = isset($xx['barang_jumlah']) ? $xx['barang_jumlah'] : 0;
 
 
 // cek jika jumlah yang diinput lebih besar dari jumlah barang yang ada
@@ -55,3 +60,4 @@ if($jumlah > $kembalikan_jumlah){
 		header("location:barang_keluar.php");
 	}
 }
+
