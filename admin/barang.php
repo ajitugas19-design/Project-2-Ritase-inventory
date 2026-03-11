@@ -1,61 +1,111 @@
 <?php include 'header.php'; ?>
 
 <style>
-/* Compact table for single screen view */
+/* Table styling */
 #table-datatable {
     width: 100% !important;
-    font-size: 11px;
+    font-size: 12px;
 }
 #table-datatable th,
 #table-datatable td {
     vertical-align: middle;
     text-align: center;
-    padding: 3px 2px !important;
-    white-space: nowrap;
+    padding: 8px 5px !important;
 }
 #table-datatable th {
-    font-size: 15px;
+    font-size: 13px;
     font-weight: bold;
 }
 #table-datatable td {
-    font-size: 14px;
+    font-size: 13px;
 }
-/* Balanced column widths */
+/* Column widths */
 #table-datatable th:nth-child(1),
-#table-datatable td:nth-child(1) { width: 25px; max-width: 25px; }   /* NO */
+#table-datatable td:nth-child(1) { width: 40px; }   /* NO */
 #table-datatable th:nth-child(2),
-#table-datatable td:nth-child(2) { width: 35px; max-width: 35px; }   /* KODE */
+#table-datatable td:nth-child(2) { width: 70px; }   /* KODE */
 #table-datatable th:nth-child(3),
-#table-datatable td:nth-child(3) { width: 60px; max-width: 60px; }   /* TANGGAL */
+#table-datatable td:nth-child(3) { width: 90px; }   /* TANGGAL */
 #table-datatable th:nth-child(4),
-#table-datatable td:nth-child(4) { width: 50px; max-width: 50px; }   /* REGISTER */
+#table-datatable td:nth-child(4) { width: 80px; }   /* REGISTER */
 #table-datatable th:nth-child(5),
-#table-datatable td:nth-child(5) { width: 80px; max-width: 80px; }   /* NAMA */
+#table-datatable td:nth-child(5) { min-width: 120px; }   /* NAMA */
 #table-datatable th:nth-child(6),
-#table-datatable td:nth-child(6) { width: 45px; max-width: 45px; }   /* JUMLAH */
+#table-datatable td:nth-child(6) { width: 70px; }   /* JUMLAH */
 #table-datatable th:nth-child(7),
-#table-datatable td:nth-child(7) { width: 60px; max-width: 60px; }   /* LOKASI */
+#table-datatable td:nth-child(7) { width: 100px; }   /* LOKASI */
 #table-datatable th:nth-child(8),
-#table-datatable td:nth-child(8) { width: 70px; max-width: 70px; }   /* BARCODE */
+#table-datatable td:nth-child(8) { width: 180px; }   /* BARCODE - diperlebar */
 #table-datatable th:nth-child(9),
-#table-datatable td:nth-child(9) { width: 45px; max-width: 45px; }   /* OPSI */
-/* Compact barcode image */
-#table-datatable .barcode-img {
-    height: 18px;
-    width: auto;
+#table-datatable td:nth-child(9) { width: 80px; }   /* OPSI */
+
+/* Enhanced barcode display */
+.barcode-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
 }
-#table-datatable .barcode-text {
-    font-size: 7px;
+.barcode-img {
+    height: 45px !important;
+    width: auto !important;
+    max-width: 160px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 3px;
+    background: white;
 }
+.barcode-text {
+    font-size: 11px !important;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: #333;
+    background: #f8f9fa;
+    padding: 2px 8px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+}
+
 /* Button styling */
 #table-datatable .btn {
-    padding: 2px 4px;
-    font-size: 13px;
-    margin: 0px;
+    padding: 4px 8px;
+    font-size: 14px;
+    margin: 2px;
 }
-/* Ensure no horizontal scroll on wrapper */
-.box-body {
-    padding: 10px !important;
+
+/* Row hover effect */
+#table-datatable tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Name column styling */
+#table-datatable td:nth-child(5) {
+    text-align: left;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Stok badge */
+.stok-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 12px;
+}
+.stok-ada {
+    background-color: #d4edda;
+    color: #155724;
+}
+.stok-habis {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+.stok-rendah {
+    background-color: #fff3cd;
+    color: #856404;
 }
 </style>
 
@@ -240,11 +290,10 @@ $barcode_teks = !empty($d['barcode']) ? $d['barcode'] : $d['barang_id'];
 </td>
 
 <td class="text-center">
-<img
-src="barcode_img.php?text=<?php echo $barcode_teks; ?>"
-class="barcode-img"
-alt="bc">
-<div class="barcode-text"><?php echo substr($barcode_teks, 0, 8); ?></div>
+<div class="barcode-container">
+<img src="barcode_img.php?text=<?php echo $barcode_teks; ?>" class="barcode-img" alt="bc">
+<span class="barcode-text"><?php echo $barcode_teks; ?></span>
+</div>
 </td>
 
 
@@ -337,15 +386,15 @@ function cariBarcode() {
                 if(data.found) {
                     var barcodeImg = data.barcode ? data.barcode : data.barang_id;
                     
-                    var html = '<tr>' +
+var html = '<tr>' +
                         '<td class="text-center">1</td>' +
                         '<td class="text-center">' + data.barang_id + '</td>' +
                         '<td class="text-center">' + (data.barang_tanggal ? data.barang_tanggal : '-') + '</td>' +
                         '<td class="text-center">' + (data.barang_register ? data.barang_register : '-') + '</td>' +
-                        '<td class="text-left" style="max-width:80px; overflow:hidden; text-overflow:ellipsis;">' + data.barang_nama + '</td>' +
+                        '<td class="text-left" style="max-width:150px; overflow:hidden; text-overflow:ellipsis;">' + data.barang_nama + '</td>' +
                         '<td class="text-center"><strong>' + data.barang_jumlah_tampilan + '</strong></td>' +
                         '<td class="text-center">' + (data.nama_lokasi ? data.nama_lokasi : '-') + '</td>' +
-                        '<td class="text-center"><img src="barcode_img.php?text=' + barcodeImg + '" class="barcode-img" alt="bc"><div class="barcode-text">' + barcodeImg.substring(0,8) + '</div></td>' +
+                        '<td class="text-center"><div class="barcode-container"><img src="barcode_img.php?text=' + barcodeImg + '" class="barcode-img" alt="bc"><span class="barcode-text">' + barcodeImg + '</span></div></td>' +
                         '<td class="text-center">' +
                         '<a class="btn btn-warning btn-xs" href="barang_edit.php?id=' + data.barang_id + '" title="Edit"><i class="fa fa-edit"></i></a> ' +
                         '<a class="btn btn-danger btn-xs" href="barang_hapus_konfir.php?id=' + data.barang_id + '" title="Hapus" onclick="return confirm(\'Yakin ingin hapus?\')"><i class="fa fa-trash"></i></a>' +
