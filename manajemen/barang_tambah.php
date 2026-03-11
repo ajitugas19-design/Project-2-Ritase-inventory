@@ -124,7 +124,8 @@ function cariBarcode() {
 }
 
 function bukaScanner() {
-    window.open('barcode_scanner.php', 'ScannerBarcode', 'width=500,height=600,scrollbars=yes');
+    // Open scanner in new window - use correct path to admin folder
+    window.open('../admin/barcode_scanner.php', 'ScannerBarcode', 'width=500,height=600,scrollbars=yes');
 }
 
 window.addEventListener('message', function(event) {

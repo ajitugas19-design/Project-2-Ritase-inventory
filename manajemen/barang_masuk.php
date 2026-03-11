@@ -309,7 +309,7 @@ function cariBarcodeMasuk() {
 
 // Function to open barcode scanner camera
 function bukaScannerMasuk() {
-    window.open('barcode_scanner.php', 'ScannerBarcode', 'width=500,height=600,scrollbars=yes');
+    window.open('../admin/barcode_scanner.php', 'ScannerBarcode', 'width=500,height=600,scrollbars=yes');
 }
 
 // Listen for messages from barcode scanner window
