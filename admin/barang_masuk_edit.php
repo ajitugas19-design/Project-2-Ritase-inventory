@@ -30,10 +30,25 @@
               while($d = mysqli_fetch_array($data)){
                 ?>
                 
+                <!-- Scan Barcode Section -->
+                <div class="form-group">
+                  <label><i class="fa fa-barcode"></i> Scan Barcode</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="scanBarcodeMasuk" placeholder="Scan atau input kode barcode untuk mencari data...">
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-info btn-flat" onclick="cariBarcodeMasuk()"><i class="fa fa-search"></i> Cari</button>
+                      <button type="button" class="btn btn-success btn-flat" onclick="bukaScannerMasuk()"><i class="fa fa-camera"></i> Kamera</button>
+                    </span>
+                  </div>
+                  <small class="text-muted">Scan atau input kode barcode untuk mencari data barang</small>
+                </div>
+
+                <hr>
+
                 <div class="form-group">
                   <label>Barang</label>
                   <input type="hidden" name="id" value="<?php echo $d['bm_id'] ?>">
-                  <select class="form-control" name="barang" required="required">
+                  <select class="form-control" name="barang" id="barangSelect" required="required">
                     <option value=""> - Pilih Barang - </option>
                     <?php 
                     $barang = mysqli_query($koneksi,"SELECT * from barang");
@@ -97,7 +112,7 @@
                 </div>
 
                 <div class="form-group">
-                  <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Batal</button>
+                  <a href="barang_masuk.php" class="btn btn-sm btn-danger">Batal</a>
                   <input type="submit" class="btn btn-sm btn-primary" value="Simpan">
                 </div>
                 <?php 
@@ -112,4 +127,60 @@
   </section>
 
 </div>
+
+<script>
+// Function to search barcode for barang masuk edit
+function cariBarcodeMasuk() {
+    var kode = document.getElementById('scanBarcodeMasuk').value;
+    if(kode == "") {
+        alert("Silakan scan atau input kode barcode terlebih dahulu!");
+        return;
+    }
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "koneksi.php?aksi=cari_barcode&kode=" + kode, true);
+    xhr.onreadystatechange = function() {
+        if(xhr.readyState == 4 && xhr.status == 200) {
+            try {
+                var data = JSON.parse(xhr.responseText);
+                if(data.found) {
+                    var select = document.getElementById('barangSelect');
+                    select.value = data.barang_id;
+                    alert("Barang ditemukan: " + data.barang_nama);
+                } else {
+                    alert("Barang dengan barcode tersebut tidak ditemukan!");
+                }
+            } catch(e) {
+                console.error("Error parsing JSON:", e);
+                alert("Terjadi kesalahan dalam pencarian!");
+            }
+        }
+    };
+    xhr.send();
+}
+
+// Function to open barcode scanner camera
+function bukaScannerMasuk() {
+    window.open('barcode_scanner.php', 'ScannerBarcode', 'width=500,height=600,scrollbars=yes');
+}
+
+// Listen for messages from barcode scanner window
+window.addEventListener('message', function(event) {
+    if(event.data && event.data.type === 'barcodeScan') {
+        var barcode = event.data.barcode;
+        document.getElementById('scanBarcodeMasuk').value = barcode;
+        cariBarcodeMasuk();
+    }
+});
+
+// Handle Enter key on scan barcode input
+document.getElementById('scanBarcodeMasuk').addEventListener('keypress', function(e) {
+    if(e.key === 'Enter') {
+        e.preventDefault();
+        cariBarcodeMasuk();
+    }
+});
+</script>
+
 <?php include 'footer.php'; ?>
+

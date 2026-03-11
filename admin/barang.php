@@ -1,46 +1,62 @@
 <?php include 'header.php'; ?>
 
 <style>
-/* Simple table adjustments only */
-
+/* Compact table for single screen view */
 #table-datatable {
     width: 100% !important;
-}
-.table-responsive {
-    max-height: 400px;
-    overflow-y: auto;
+    font-size: 11px;
 }
 #table-datatable th,
 #table-datatable td {
     vertical-align: middle;
     text-align: center;
+    padding: 3px 2px !important;
+    white-space: nowrap;
+}
+#table-datatable th {
+    font-size: 15px;
+    font-weight: bold;
 }
 #table-datatable td {
-    font-size: 13px;
+    font-size: 14px;
 }
-.table > tbody > tr > td {
-    padding: 8px;
-}
-
-/* Column Sizes - simplified for better layout */
+/* Balanced column widths */
 #table-datatable th:nth-child(1),
-#table-datatable td:nth-child(1) { width: 40px; min-width: 40px; }   /* NO */
+#table-datatable td:nth-child(1) { width: 25px; max-width: 25px; }   /* NO */
 #table-datatable th:nth-child(2),
-#table-datatable td:nth-child(2) { width: 80px; min-width: 80px; }   /* KODE */
+#table-datatable td:nth-child(2) { width: 35px; max-width: 35px; }   /* KODE */
 #table-datatable th:nth-child(3),
-#table-datatable td:nth-child(3) { width: 100px; min-width: 100px; }  /* TANGGAL */
+#table-datatable td:nth-child(3) { width: 60px; max-width: 60px; }   /* TANGGAL */
 #table-datatable th:nth-child(4),
-#table-datatable td:nth-child(4) { width: 100px; min-width: 100px; }  /* REGISTER */
+#table-datatable td:nth-child(4) { width: 50px; max-width: 50px; }   /* REGISTER */
 #table-datatable th:nth-child(5),
-#table-datatable td:nth-child(5) { width: auto; min-width: 150px; }   /* NAMA */
+#table-datatable td:nth-child(5) { width: 80px; max-width: 80px; }   /* NAMA */
 #table-datatable th:nth-child(6),
-#table-datatable td:nth-child(6) { width: 80px; min-width: 80px; }  /* JUMLAH */
+#table-datatable td:nth-child(6) { width: 45px; max-width: 45px; }   /* JUMLAH */
 #table-datatable th:nth-child(7),
-#table-datatable td:nth-child(7) { width: 100px; min-width: 100px; }   /* LOKASI */
+#table-datatable td:nth-child(7) { width: 60px; max-width: 60px; }   /* LOKASI */
 #table-datatable th:nth-child(8),
-#table-datatable td:nth-child(8) { width: 120px; min-width: 120px; }  /* BARCODE */
+#table-datatable td:nth-child(8) { width: 70px; max-width: 70px; }   /* BARCODE */
 #table-datatable th:nth-child(9),
-#table-datatable td:nth-child(9) { width: 70px; min-width: 70px; }   /* OPSI */
+#table-datatable td:nth-child(9) { width: 45px; max-width: 45px; }   /* OPSI */
+/* Compact barcode image */
+#table-datatable .barcode-img {
+    height: 18px;
+    width: auto;
+}
+#table-datatable .barcode-text {
+    font-size: 7px;
+}
+/* Button styling */
+#table-datatable .btn {
+    padding: 2px 4px;
+    font-size: 13px;
+    margin: 0px;
+}
+/* Ensure no horizontal scroll on wrapper */
+.box-body {
+    padding: 10px !important;
+}
 </style>
 
 <div class="content-wrapper">
@@ -77,39 +93,40 @@ Barang
 
 <div class="box-body">
 
-<div class="row" style="margin-bottom:15px;">
-<div class="col-md-8">
+<div class="row" style="margin-bottom:10px;">
+<div class="col-md-10">
 
 <div class="form-inline">
 
 <div class="form-group">
 
-<label>
+<label style="font-size:12px;">
 <i class="fa fa-barcode"></i> Scan Barcode :
 </label>
 
 <input type="text"
 id="cari_barcode"
 class="form-control"
+style="width:200px; height:28px; font-size:12px;"
 placeholder="Scan atau input kode barcode..."
 autofocus>
 
 <button type="button"
-class="btn btn-primary"
+class="btn btn-primary btn-sm"
 onclick="cariBarcode()">
 
 <i class="fa fa-search"></i> Cari
 </button>
 
 <button type="button"
-class="btn btn-success"
+class="btn btn-success btn-sm"
 onclick="bukaScanner()">
 
 <i class="fa fa-camera"></i> Kamera
 </button>
 
 <a href="barang.php"
-class="btn btn-default">
+class="btn btn-default btn-sm">
 
 <i class="fa fa-refresh"></i> Reset
 </a>
@@ -118,7 +135,7 @@ class="btn btn-default">
 
 </div>
 
-<div id="hasil_pencarian" style="margin-top:10px;"></div>
+<div id="hasil_pencarian" style="margin-top:5px;"></div>
 
 </div>
 </div>
@@ -128,11 +145,11 @@ class="btn btn-default">
 
 <thead>
 
-<tr>
+<tr class="bg-primary" style="font-size:10px;">
 <th>NO</th>
 <th>KODE</th>
 <th>TANGGAL</th>
-<th>REGISTER</th>
+<th>REG</th>
 <th>NAMA</th>
 <th>JUMLAH</th>
 <th>LOKASI</th>
@@ -187,6 +204,9 @@ $total_keluar=$k['total'] ? $k['total'] : 0;
 // Hitung jumlah stok: total_masuk - total_keluar
 $stok = $total_masuk - $total_keluar;
 
+// Get barcode text
+$barcode_teks = !empty($d['barcode']) ? $d['barcode'] : $d['barang_id'];
+
 ?>
 
 <tr>
@@ -207,7 +227,7 @@ $stok = $total_masuk - $total_keluar;
 <?php echo $d['barang_register']; ?>
 </td>
 
-<td>
+<td class="text-left" style="max-width:80px; overflow:hidden; text-overflow:ellipsis;">
 <?php echo $d['barang_nama']; ?>
 </td>
 
@@ -220,33 +240,11 @@ $stok = $total_masuk - $total_keluar;
 </td>
 
 <td class="text-center">
-
-<?php if(!empty($d['barcode'])){ ?>
-
 <img
-src="barcode_img.php?text=<?php echo $d['barcode']; ?>"
-height="50">
-
-<br>
-
-<small>
-<?php echo $d['barcode']; ?>
-</small>
-
-<?php }else{ ?>
-
-<img
-src="barcode_img.php?text=<?php echo $d['barang_id']; ?>"
-height="50">
-
-<br>
-
-<small>
-<?php echo $d['barang_id']; ?>
-</small>
-
-<?php } ?>
-
+src="barcode_img.php?text=<?php echo $barcode_teks; ?>"
+class="barcode-img"
+alt="bc">
+<div class="barcode-text"><?php echo substr($barcode_teks, 0, 8); ?></div>
 </td>
 
 
@@ -254,7 +252,8 @@ height="50">
 
 <a
 class="btn btn-warning btn-xs"
-href="barang_edit.php?id=<?php echo $d['barang_id']; ?>">
+href="barang_edit.php?id=<?php echo $d['barang_id']; ?>"
+title="Edit">
 
 <i class="fa fa-edit"></i>
 
@@ -262,7 +261,9 @@ href="barang_edit.php?id=<?php echo $d['barang_id']; ?>">
 
 <a
 class="btn btn-danger btn-xs"
-href="barang_hapus_konfir.php?id=<?php echo $d['barang_id']; ?>">
+href="barang_hapus_konfir.php?id=<?php echo $d['barang_id']; ?>"
+title="Hapus"
+onclick="return confirm('Yakin ingin hapus?')">
 
 <i class="fa fa-trash"></i>
 
@@ -277,25 +278,21 @@ href="barang_hapus_konfir.php?id=<?php echo $d['barang_id']; ?>">
 </tbody>
 
 <tfoot>
-<tr class="bg-info">
+<tr class="bg-info" style="font-size:10px;">
 <th colspan="5" class="text-right">JUMLAH TOTAL:</th>
 <th id="total_jumlah">
 <?php 
 include '../koneksi.php';
-// Hitung total dengan mempertimbangkan barang masuk dan keluar
 $barang = mysqli_query($koneksi, "SELECT barang_id FROM barang");
 $total_keseluruhan = 0;
 while($b = mysqli_fetch_assoc($barang)) {
     $bid = $b['barang_id'];
-    
     $m = mysqli_query($koneksi, "SELECT SUM(bm_jumlah) as tm FROM barang_masuk WHERE bm_id_barang = '$bid'");
     $md = mysqli_fetch_assoc($m);
     $tm = $md['tm'] ? $md['tm'] : 0;
-    
     $k = mysqli_query($koneksi, "SELECT SUM(bk_jumlah_keluar) as tk FROM barang_keluar WHERE bk_id_barang = '$bid'");
     $kd = mysqli_fetch_assoc($k);
     $tk = $kd['tk'] ? $kd['tk'] : 0;
-    
     $total_keseluruhan += $tm - $tk;
 }
 echo number_format($total_keseluruhan, 0, ',', '.');
@@ -321,35 +318,95 @@ echo number_format($total_keseluruhan, 0, ',', '.');
 
 
 <script>
-
-function cariBarcode(){
-
-var kode=document.getElementById('cari_barcode').value;
-
-if(kode==""){
-location.href='barang.php';
-return;
+function cariBarcode() {
+    var kode = document.getElementById('cari_barcode').value;
+    if(kode == "") {
+        location.href = 'barang.php';
+        return;
+    }
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "../koneksi.php?aksi=cari_barcode&kode=" + encodeURIComponent(kode), true);
+    xhr.onreadystatechange = function() {
+        if(xhr.readyState == 4 && xhr.status == 200) {
+            try {
+                var data = JSON.parse(xhr.responseText);
+                var tabelBody = document.getElementById('tabel_barang');
+                var totalJumlah = document.getElementById('total_jumlah');
+                
+                if(data.found) {
+                    var barcodeImg = data.barcode ? data.barcode : data.barang_id;
+                    
+                    var html = '<tr>' +
+                        '<td class="text-center">1</td>' +
+                        '<td class="text-center">' + data.barang_id + '</td>' +
+                        '<td class="text-center">' + (data.barang_tanggal ? data.barang_tanggal : '-') + '</td>' +
+                        '<td class="text-center">' + (data.barang_register ? data.barang_register : '-') + '</td>' +
+                        '<td class="text-left" style="max-width:80px; overflow:hidden; text-overflow:ellipsis;">' + data.barang_nama + '</td>' +
+                        '<td class="text-center"><strong>' + data.barang_jumlah_tampilan + '</strong></td>' +
+                        '<td class="text-center">' + (data.nama_lokasi ? data.nama_lokasi : '-') + '</td>' +
+                        '<td class="text-center"><img src="barcode_img.php?text=' + barcodeImg + '" class="barcode-img" alt="bc"><div class="barcode-text">' + barcodeImg.substring(0,8) + '</div></td>' +
+                        '<td class="text-center">' +
+                        '<a class="btn btn-warning btn-xs" href="barang_edit.php?id=' + data.barang_id + '" title="Edit"><i class="fa fa-edit"></i></a> ' +
+                        '<a class="btn btn-danger btn-xs" href="barang_hapus_konfir.php?id=' + data.barang_id + '" title="Hapus" onclick="return confirm(\'Yakin ingin hapus?\')"><i class="fa fa-trash"></i></a>' +
+                        '</td></tr>';
+                    
+                    tabelBody.innerHTML = html;
+                    totalJumlah.innerHTML = '<strong>' + data.barang_jumlah_tampilan + '</strong>';
+                    
+                    document.getElementById('hasil_pencarian').innerHTML = 
+                        '<div class="alert alert-success"><i class="fa fa-check"></i> Ditemukan: ' + data.barang_nama + ' (Barcode: ' + barcodeImg + ')</div>';
+                } else {
+                    tabelBody.innerHTML = '<tr><td colspan="9" class="text-center alert alert-warning">Barang tidak ditemukan. <a href="barang_tambah.php">Tambah barang baru?</a></td></tr>';
+                    totalJumlah.innerHTML = '0';
+                    
+                    document.getElementById('hasil_pencarian').innerHTML = 
+                        '<div class="alert alert-warning"><i class="fa fa-warning"></i> Barang dengan barcode "' + kode + '" tidak ditemukan</div>';
+                }
+            } catch(e) {
+                console.error("Error:", e);
+                window.location = 'barang.php?barcode=' + encodeURIComponent(kode);
+            }
+        }
+    };
+    xhr.send();
 }
 
-window.location='barang.php?barcode='+kode;
-
+function bukaScanner() {
+    window.open(
+    'barcode_scanner.php',
+    'ScannerBarcode',
+    'width=500,height=600'
+    );
 }
 
-function bukaScanner(){
+window.addEventListener('message', function(event) {
+    if(event.data && event.data.type === 'barcodeScan') {
+        var barcode = event.data.barcode;
+        document.getElementById('cari_barcode').value = barcode;
+        cariBarcode();
+    }
+});
 
-window.open(
-'barcode_scanner.php',
-'ScannerBarcode',
-'width=500,height=600'
-);
+document.getElementById('cari_barcode').addEventListener('keypress', function(e) {
+    if(e.key === 'Enter') {
+        e.preventDefault();
+        cariBarcode();
+    }
+});
 
-}
-
-function changePageLength(length){
-    var table = $('#table-datatable').DataTable();
-    table.page.len(parseInt(length)).draw();
-}
-
+let searchTimeout;
+document.getElementById('cari_barcode').addEventListener('input', function(e) {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+        var kode = e.target.value;
+        if(kode.length >= 3) {
+            cariBarcode();
+        } else if(kode == "") {
+            location.href = 'barang.php';
+        }
+    }, 300);
+});
 </script>
 
 

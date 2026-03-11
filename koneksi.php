@@ -168,12 +168,15 @@ if(isset($_GET['aksi']) && $_GET['aksi'] == 'cari_barcode') {
     $data = mysqli_fetch_assoc($query);
     
     if($data) {
+        // Use barang_id from the result (not $kode which could be barcode)
+        $barang_id = $data['barang_id'];
+        
         // Get total masuk and keluar for this barang
-        $masuk = mysqli_query($koneksi, "SELECT SUM(bm_jumlah) as total_masuk FROM barang_masuk WHERE bm_id_barang = '$kode'");
+        $masuk = mysqli_query($koneksi, "SELECT SUM(bm_jumlah) as total_masuk FROM barang_masuk WHERE bm_id_barang = '$barang_id'");
         $masuk_data = mysqli_fetch_assoc($masuk);
         $total_masuk = $masuk_data['total_masuk'] ? $masuk_data['total_masuk'] : 0;
         
-        $keluar = mysqli_query($koneksi, "SELECT SUM(bk_jumlah_keluar) as total_keluar FROM barang_keluar WHERE bk_id_barang = '$kode'");
+        $keluar = mysqli_query($koneksi, "SELECT SUM(bk_jumlah_keluar) as total_keluar FROM barang_keluar WHERE bk_id_barang = '$barang_id'");
         $keluar_data = mysqli_fetch_assoc($keluar);
         $total_keluar = $keluar_data['total_keluar'] ? $keluar_data['total_keluar'] : 0;
         

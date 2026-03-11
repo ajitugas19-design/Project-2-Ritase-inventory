@@ -280,7 +280,7 @@ function cariBarcodeMasuk() {
     }
     
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "../koneksi.php?aksi=cari_barcode&kode=" + kode, true);
+    xhr.open("GET", "koneksi.php?aksi=cari_barcode&kode=" + kode, true);
     xhr.onreadystatechange = function() {
         if(xhr.readyState == 4 && xhr.status == 200) {
             try {
