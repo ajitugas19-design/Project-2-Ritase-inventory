@@ -1,10 +1,18 @@
 <?php 
 include '../koneksi.php';
+session_start();
+
+if (!isset($_SESSION['level']) || $_SESSION['level'] !== 'administrator') {
+  header("location:barang_masuk.php?alert=forbidden");
+  exit;
+}
+
 $id = $_GET['id'];
 
 
 
 $bm = mysqli_query($koneksi,"select * from barang_masuk where bm_id='$id'");
+
 $barang_masuk = mysqli_fetch_assoc($bm);
 $id_barang_masuk = $barang_masuk['bm_id_barang'];
 $jumlah_barang_masuk = $barang_masuk['bm_jumlah'];

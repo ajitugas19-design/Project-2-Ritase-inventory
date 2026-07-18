@@ -218,9 +218,13 @@
                         <span class="barcode-text"><?php echo $barcode_teks; ?></span>
                         </div>
                       </td>
-                      <td class="text-center">                        
-                        <a class="btn btn-warning btn-xs" href="barang_edit.php?id=<?php echo $d['barang_id'] ?>" title="Edit"><i class="fa fa-edit"></i></a>
-                        <a class="btn btn-danger btn-xs" href="barang_hapus_konfir.php?id=<?php echo $d['barang_id'] ?>" title="Hapus" onclick="return confirm('Yakin ingin hapus?')"><i class="fa fa-trash"></i></a>
+                      <td class="text-center">
+                        <?php if(isset($_SESSION['level']) && $_SESSION['level'] === 'administrator'){ ?>
+                        <?php if(isset($_SESSION['level']) && $_SESSION['level'] === 'administrator'){ ?>
+                          <a class="btn btn-warning btn-xs" href="barang_edit.php?id=<?php echo $d['barang_id'] ?>" title="Edit"><i class="fa fa-edit"></i></a>
+                          <a class="btn btn-danger btn-xs" href="barang_hapus_konfir.php?id=<?php echo $d['barang_id'] ?>" title="Hapus" onclick="return confirm('Yakin ingin hapus?')"><i class="fa fa-trash"></i></a>
+                        <?php } ?>
+                        <?php } ?>
                       </td>
                     </tr>
                     <?php 

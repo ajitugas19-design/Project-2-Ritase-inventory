@@ -1,6 +1,13 @@
 <?php 
 include '../koneksi.php';
-$id  = $_POST['id'];
+session_start();
+
+if (!isset($_SESSION['level']) || $_SESSION['level'] !== 'administrator') {
+  header("location:peminjaman.php?alert=forbidden");
+  exit;
+}
+
+$id = $_POST['id'];
 $nama  = $_POST['nama'];
 $barang = $_POST['barang'];
 $jumlah = $_POST['jumlah'];

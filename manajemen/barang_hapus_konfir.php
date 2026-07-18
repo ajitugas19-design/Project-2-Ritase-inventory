@@ -1,4 +1,13 @@
-<?php include 'header.php'; ?>
+<?php 
+include 'header.php';
+
+// Authorization guard: hanya administrator yang boleh hapus
+if (!isset($_SESSION['level']) || $_SESSION['level'] !== 'administrator') {
+  header("location:barang.php?alert=forbidden");
+  exit;
+}
+?>
+
 
 <div class="content-wrapper">
 

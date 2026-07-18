@@ -49,9 +49,11 @@
                       <td><?php echo $d['user_nama']; ?></td>
                       <td><?php echo $d['user_username']; ?></td>
                       <td><?php echo $d['user_level']; ?></td>
-                      <td>                        
-                        <a class="btn btn-warning btn-sm" href="user_edit.php?id=<?php echo $d['user_id'] ?>"><i class="fa fa-cog"></i></a>
-                        <a class="btn btn-danger btn-sm" href="user_hapus.php?id=<?php echo $d['user_id'] ?>" onclick="return confirm('Yakin ingin hapus?')"><i class="fa fa-trash"></i></a>
+                      <td>
+                        <?php if(isset($_SESSION['level']) && $_SESSION['level'] === 'administrator'){ ?>
+                          <a class="btn btn-warning btn-sm" href="user_edit.php?id=<?php echo $d['user_id'] ?>"><i class="fa fa-cog"></i></a>
+                          <a class="btn btn-danger btn-sm" href="user_hapus.php?id=<?php echo $d['user_id'] ?>" onclick="return confirm('Yakin ingin hapus?')"><i class="fa fa-trash"></i></a>
+                        <?php } ?>
                       </td>
                     </tr>
                     <?php 

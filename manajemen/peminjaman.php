@@ -70,8 +70,10 @@
 
                       </td>
                       <td>                        
-                        <a class="btn btn-warning btn-sm" href="peminjaman_edit.php?id=<?php echo $d['pinjam_id'] ?>"><i class="fa fa-cog"></i></a>
-                        <a class="btn btn-danger btn-sm" href="peminjaman_hapus.php?id=<?php echo $d['pinjam_id'] ?>"><i class="fa fa-trash"></i></a>
+                        <?php if(isset($_SESSION['level']) && $_SESSION['level'] === 'administrator'){ ?>
+                          <a class="btn btn-warning btn-sm" href="peminjaman_edit.php?id=<?php echo $d['pinjam_id'] ?>"><i class="fa fa-cog"></i></a>
+                          <a class="btn btn-danger btn-sm" href="peminjaman_hapus.php?id=<?php echo $d['pinjam_id'] ?>"><i class="fa fa-trash"></i></a>
+                        <?php } ?>
                       </td>
                     </tr>
                     <?php 

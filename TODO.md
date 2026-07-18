@@ -1,32 +1,16 @@
-# TODO - Perbaikan Management Barang
+# TODO - Perbaikan Hak Akses Manajemen
 
-## Completed:
+## Target
+- Role **administrator**: hak penuh (add/edit/delete)
+- Role **manajemen**: **tidak boleh edit & hapus** dan **tidak boleh tambah user**
 
-- [x] manajemen/barang_masuk.php - Tambah fitur scan barcode pada modal
-- [x] admin/barang_masuk.php - Tambah fitur scan barcode pada modal
-- [x] koneksi.php - Sudah ada fungsi pencarian barcode
-- [x] manajemen/barang_tambah.php - Form dengan urutan: Nama, Lokasi, Jumlah, Barcode (sudah ada)
-- [x] manajemen/barang_edit.php - Form dengan urutan: No (readonly), Nama, Lokasi, Jumlah, Barcode (sudah ada)
-- [x] manajemen/barang_act.php - Query insert dengan field yang sesuai (sudah ada)
-- [x] manajemen/barang_update.php - Query update dengan field yang sesuai (sudah ada)
-- [x] manajemen/barang.php - Tabel dengan kolom: NO, KODE, TANGGAL, REGISTER, NAMA, JUMLAH, LOKASI, BARCODE, OPSI (Edit & Hapus)
+## Langkah
+- [ ] Tambahkan guard authorization (session level) pada semua endpoint `*_update.php` dan `*_hapus*.php` di folder `manajemen/` (tolak selain administrator).
+- [ ] Tambahkan guard pada endpoint tambah user: `manajemen/user_tambah.php` dan action add user (`manajemen/user_act.php` jika ada) agar menolak selain administrator.
+- [ ] Sembunyikan tombol Edit/Hapus di halaman list untuk semua modul (barang, barang masuk, barang keluar, suplier, peminjaman, user) jika role bukan administrator.
+- [ ] Test:
+  - Login manajemen: coba akses paksa URL update/hapus -> harus ditolak.
+  - Login manajemen: tambah user -> harus ditolak.
+  - Login manajemen: tambah modul selain user (barang/barang masuk/barang keluar/suplier/peminjaman) sesuai requirement -> tidak ditolak.
+  - Login administrator: semuanya berjalan.
 
-## Urutan Fields di Table:
-
-- NO
-- KODE
-- TANGGAL
-- REGISTER
-- NAMA
-- JUMLAH
-- LOKASI
-- BARCODE
-- OPSI (Edit, Hapus)
-
-## Database Fields yang digunakan:
-
-- barang_id (No/Kode)
-- barang_nama (Nama)
-- barang_lokasi (Lokasi)
-- barang_jumlah (Jumlah)
-- barang_keterangan (Barcode)

@@ -1,5 +1,12 @@
 <?php 
 include '../koneksi.php';
+session_start();
+
+if (!isset($_SESSION['level']) || $_SESSION['level'] !== 'administrator') {
+  header("location:barang_keluar.php?alert=forbidden");
+  exit;
+}
+
 $id  = $_POST['id'];
 $barang_baru  = $_POST['barang'];
 $register = $_POST['register'];

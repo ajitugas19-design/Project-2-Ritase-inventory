@@ -67,12 +67,14 @@
                     <td><?php echo $d['nama_gudang']; ?></td>
                     <td><?php echo $d['nama_gudang2']; ?></td>
                     <td class="text-center">
-                      <a class="btn btn-warning btn-xs" href="barang_masuk_edit.php?id=<?php echo $d['bm_id'] ?>" title="Edit" style="margin-right: 3px;">
-                        <i class="fa fa-edit"></i>
-                      </a>
-                      <a class="btn btn-danger btn-xs" href="barang_masuk_hapus.php?id=<?php echo $d['bm_id'] ?>" onclick="return confirm('Yakin ingin hapus?')" title="Hapus" style="margin-left: 3px;">
-                        <i class="fa fa-trash"></i>
-                      </a>
+                      <?php if(isset($_SESSION['level']) && $_SESSION['level'] === 'administrator'){ ?>
+                        <a class="btn btn-warning btn-xs" href="barang_masuk_edit.php?id=<?php echo $d['bm_id'] ?>" title="Edit" style="margin-right: 3px;">
+                          <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn btn-danger btn-xs" href="barang_masuk_hapus.php?id=<?php echo $d['bm_id'] ?>" onclick="return confirm('Yakin ingin hapus?')" title="Hapus" style="margin-left: 3px;">
+                          <i class="fa fa-trash"></i>
+                        </a>
+                      <?php } ?>
                     </td>
                   </tr>
                   <?php } ?>

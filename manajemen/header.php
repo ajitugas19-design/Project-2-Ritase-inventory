@@ -121,7 +121,7 @@
     </a>
     <ul class="treeview-menu">
       <li><a href="user.php"><i class="fa fa-circle-o"></i> Data Pengguna</a></li>
-      <li><a href="user_tambah.php"><i class="fa fa-circle-o"></i> Tambah Pengguna</a></li>
+      <!--<li><a href="user_tambah.php"><i class="fa fa-circle-o"></i> Tambah Pengguna</a></li>-->
     </ul>
   </li>
 

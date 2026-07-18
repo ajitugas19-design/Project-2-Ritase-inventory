@@ -1,5 +1,12 @@
 <?php 
 include '../koneksi.php';
+session_start();
+
+if (!isset($_SESSION['level']) || $_SESSION['level'] !== 'administrator') {
+  header("location:suplier.php?alert=forbidden");
+  exit;
+}
+
 $id  = $_POST['id'];
 $nama  = $_POST['nama'];
 $alamat = $_POST['alamat'];
